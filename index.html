@@ -1,0 +1,2322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern Trade Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070B1A; --cyan:#22D3EE; --violet:#8B5CF6; --pink:#F472B6;
+  --lime:#4ADE80; --red:#FB7185; --gold:#FBBF24;
+  --grad:linear-gradient(100deg,#22D3EE,#8B5CF6,#F472B6);
+  --glass:rgba(255,255,255,.05); --glass-brd:rgba(255,255,255,.12);
+  --ink:#E7ECFF; --muted:#9AA6C9; --spring:cubic-bezier(.22,1.4,.36,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
+.mono{font-family:'JetBrains Mono',monospace}
+.bg-fx{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;animation:drift 26s var(--spring) infinite alternate}
+.orb.a{width:520px;height:520px;background:#1e3a8a;top:-160px;left:-120px}
+.orb.b{width:460px;height:460px;background:#6d28d9;bottom:-180px;right:-100px;animation-duration:32s}
+.orb.c{width:380px;height:380px;background:#0e7490;top:40%;left:55%;animation-duration:29s}
+.orb.d{width:300px;height:300px;background:#be185d;top:12%;right:18%;animation-duration:35s;opacity:.35}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(60px,50px) scale(1.15)}}
+.grid-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(rgba(139,92,246,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,246,.09) 1px,transparent 1px);
+  background-size:46px 46px;-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.7),transparent 60%);mask-image:linear-gradient(to bottom,rgba(0,0,0,.7),transparent 60%)}
+/* ===== header w/ game HUD ===== */
+header{position:sticky;top:0;z-index:50;padding:2px;margin:12px;border-radius:20px;background:var(--grad);background-size:300% 300%;animation:flow 8s linear infinite}
+@keyframes flow{to{background-position:300% 0}}
+.hdr-in{background:rgba(9,13,28,.88);backdrop-filter:blur(14px);border-radius:18px;padding:12px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;line-height:1.1;min-width:180px}
+.brand .k{font-size:11px;letter-spacing:.26em;color:var(--cyan);font-weight:600}
+.brand .t{font-size:18px;font-weight:700}
+.brand .s{font-size:11px;color:var(--muted)}
+.hud{margin-left:auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.lvl{display:flex;flex-direction:column;gap:3px;min-width:170px}
+.lvl .top{display:flex;justify-content:space-between;font-size:11px}
+.lvl .top .ti{font-weight:700;color:#fff}
+.lvl .top .xp{font-family:'JetBrains Mono',monospace;color:var(--gold)}
+.lvl .bar{height:8px;border-radius:8px;background:rgba(255,255,255,.09);overflow:hidden}
+.lvl .bar i{display:block;height:100%;width:0;border-radius:8px;background:var(--grad);background-size:200% 100%;animation:shim 2.5s linear infinite;transition:width .6s var(--spring)}
+@keyframes shim{to{background-position:200% 0}}
+.chip{display:flex;align-items:center;gap:6px;background:var(--glass);border:1px solid var(--glass-brd);border-radius:12px;padding:7px 12px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;transition:.3s}
+.chip.streak{color:var(--gold)}
+.chip.streak.t1{border-color:rgba(251,191,36,.45);box-shadow:0 0 14px rgba(251,191,36,.22)}
+.chip.streak.t2{border-color:rgba(251,146,60,.7);box-shadow:0 0 20px rgba(251,146,60,.38);color:#FDBA74}
+.chip.streak.t3{border-color:rgba(244,114,182,.85);box-shadow:0 0 28px rgba(244,114,182,.5);color:#FBCFE8;animation:pulseHot 1.1s ease-in-out infinite alternate}
+@keyframes pulseHot{to{transform:scale(1.07)}}
+.chip.badge,.chip.snd{cursor:pointer}
+.chip.badge{color:var(--cyan)}
+.chip.snd{color:var(--pink)}
+.chip.cmap{color:var(--lime);cursor:pointer}
+.chip.cmap:hover{border-color:rgba(74,222,128,.6)}
+.chip.snd.off{color:var(--muted);opacity:.65}
+.chip .lab{font-size:10px;letter-spacing:.12em;color:var(--muted);font-family:'Space Grotesk',sans-serif;font-weight:600}
+/* ===== layout ===== */
+.wrap{display:grid;grid-template-columns:290px 1fr;gap:20px;padding:6px 18px 96px;max-width:1320px;margin:0 auto}
+aside{position:sticky;top:104px;align-self:start;max-height:calc(100vh - 124px);overflow-y:auto;padding-right:4px}
+aside::-webkit-scrollbar{width:6px}aside::-webkit-scrollbar-thumb{background:rgba(139,92,246,.4);border-radius:6px}
+.side-h{font-size:11px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin:4px 0 10px 6px}
+.pbar{height:8px;border-radius:8px;background:rgba(255,255,255,.07);overflow:hidden;margin:0 6px 16px}
+.pbar i{display:block;height:100%;width:0;border-radius:8px;background:var(--grad);background-size:200% 100%;animation:shim 2.5s linear infinite;transition:width .6s var(--spring)}
+.topic{display:flex;align-items:center;gap:10px;padding:11px 12px;margin-bottom:7px;border-radius:13px;background:var(--glass);border:1px solid transparent;cursor:pointer;transition:.25s;font-size:13.5px}
+.topic:hover{border-color:var(--glass-brd);transform:translateX(3px)}
+.topic .idx{width:24px;height:24px;flex:0 0 24px;border-radius:8px;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;background:rgba(255,255,255,.08);color:var(--muted)}
+.topic.done .idx{background:var(--grad);color:#08111f}
+.topic .nm{flex:1;line-height:1.2;display:flex;flex-direction:column;gap:2px;min-width:0}
+.topic .nm small{font-size:10.5px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.topic .flame{font-style:normal;font-size:12px}
+.topic .sc{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--cyan)}
+.topic.done{border-color:rgba(74,222,128,.34)}
+.topic.hot{border-color:rgba(251,191,36,.3)}
+main{min-width:0}
+.card{background:var(--glass);border:1px solid var(--glass-brd);border-radius:20px;padding:26px 28px;backdrop-filter:blur(10px);margin-bottom:18px;animation:popIn .5s var(--spring) both}
+@keyframes popIn{from{opacity:0;transform:translateY(22px) scale(.96)}to{opacity:1;transform:none}}
+.eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);font-weight:600;margin-bottom:6px}
+h1.tt{font-size:26px;margin:0 0 4px;font-weight:700}
+.sub{color:var(--muted);font-size:14px;line-height:1.6}
+.sub b{color:#D6DDF7}
+.srcrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.src{font-family:'JetBrains Mono',monospace;font-size:11px;padding:5px 11px;border-radius:999px;background:rgba(139,92,246,.14);border:1px solid rgba(139,92,246,.45);color:#d6ccff}
+.watch{margin-top:14px;background:rgba(251,113,133,.09);border:1px solid rgba(251,113,133,.45);border-left:4px solid var(--red);border-radius:12px;padding:14px 16px}
+.watch h5{margin:0 0 4px;color:var(--red);font-size:14px} .watch p{margin:0;font-size:13.5px;color:#ffd9e0;line-height:1.5}
+/* ===== buttons / mcq ===== */
+.btn{border:0;font-family:inherit;font-weight:600;cursor:pointer;border-radius:12px;transition:.25s;font-size:14px}
+.btn-grad{background:var(--grad);background-size:200% auto;color:#08111f;padding:12px 24px;box-shadow:0 6px 24px rgba(139,92,246,.35)}
+.btn-grad:hover{background-position:100% center;transform:translateY(-2px)}
+.btn-ghost{background:rgba(255,255,255,.06);border:1px solid var(--glass-brd);color:var(--ink);padding:11px 20px}
+.btn-ghost:hover{border-color:var(--cyan);color:#fff}
+.row-btns{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:20px}
+.mcq{margin-top:8px}.mcq .q{font-size:16px;font-weight:600;margin-bottom:8px;line-height:1.5}
+.mcq .q b{color:#fff}
+.givens{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 10px}
+.givens span{font-family:'JetBrains Mono',monospace;font-size:11.5px;padding:4px 9px;border-radius:8px;background:rgba(34,211,238,.09);border:1px solid rgba(34,211,238,.28);color:#bfe9f4}
+.tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.05em;padding:3px 10px;border-radius:999px;margin:0 6px 10px 0}
+.tag.concept{background:rgba(34,211,238,.14);color:var(--cyan);border:1px solid rgba(34,211,238,.4)}
+.tag.apply{background:rgba(251,191,36,.14);color:var(--gold);border:1px solid rgba(251,191,36,.4)}
+.tag.calc{background:rgba(74,222,128,.14);color:var(--lime);border:1px solid rgba(74,222,128,.45)}
+.tag.case{background:rgba(244,114,182,.16);color:var(--pink);border:1px solid rgba(244,114,182,.5)}
+.tag.easy{background:rgba(74,222,128,.13);color:var(--lime)}.tag.medium{background:rgba(251,191,36,.13);color:var(--gold)}.tag.hard{background:rgba(251,113,133,.13);color:var(--red)}
+.tag.trap{background:rgba(139,92,246,.2);color:#ddd0ff;border:1px solid rgba(139,92,246,.6);animation:trapGlow 2.2s ease-in-out infinite alternate}
+@keyframes trapGlow{to{box-shadow:0 0 14px rgba(139,92,246,.55)}}
+.opts{display:grid;gap:10px;margin-top:6px}
+.opt{text-align:left;background:rgba(255,255,255,.04);border:1px solid var(--glass-brd);border-radius:12px;padding:14px 16px;cursor:pointer;font-family:inherit;font-size:14.5px;color:var(--ink);transition:.18s;position:relative;line-height:1.45}
+.opt:hover:not(:disabled){border-color:var(--cyan);transform:translateX(3px)}.opt:disabled{cursor:default}
+.opt .lt{font-family:'JetBrains Mono',monospace;color:var(--violet);font-weight:700;margin-right:10px}
+.opt.correct{border-color:var(--lime);background:rgba(74,222,128,.16);box-shadow:0 0 34px rgba(74,222,128,.4);animation:popBig .6s var(--spring)}
+.opt.wrong{border-color:var(--red);background:rgba(251,113,133,.2);box-shadow:0 0 34px rgba(251,113,133,.4);animation:shakeHard .55s}.opt.dim{opacity:.32}
+@keyframes popBig{0%{transform:scale(1)}30%{transform:scale(1.075)}55%{transform:scale(.99)}75%{transform:scale(1.03)}100%{transform:scale(1)}}
+@keyframes shakeHard{0%,100%{transform:translateX(0) rotate(0)}12%{transform:translateX(-14px) rotate(-1.4deg)}26%{transform:translateX(14px) rotate(1.4deg)}42%{transform:translateX(-11px) rotate(-1deg)}58%{transform:translateX(11px) rotate(1deg)}74%{transform:translateX(-6px)}88%{transform:translateX(6px)}}
+.why{margin-top:14px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.4);border-radius:12px;padding:14px 16px;opacity:0;transform:translateY(8px);transition:.4s;max-height:0;overflow:hidden}
+.why.show{opacity:1;transform:none;max-height:900px}
+.why h5{margin:0 0 4px;color:var(--gold);font-size:13px}.why p{margin:0 0 8px;font-size:13.5px;color:#ffeec4;line-height:1.6}
+.why p:last-child{margin-bottom:0}
+.why .work{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#ffe0a3;background:rgba(0,0,0,.28);border-radius:8px;padding:9px 11px;margin:8px 0;line-height:1.7;overflow-x:auto;white-space:pre-wrap}
+.floater{position:fixed;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:28px;pointer-events:none;z-index:999;text-shadow:0 3px 14px rgba(0,0,0,.6);animation:rise 1.25s var(--spring) forwards}
+@keyframes rise{from{opacity:1;transform:translateY(0) scale(.6)}to{opacity:0;transform:translateY(-110px) scale(1.6)}}
+/* ===== BIG REACTION TEXT ===== */
+.bigcall{position:fixed;left:50%;top:26%;transform:translateX(-50%);z-index:1000;pointer-events:none;font-weight:700;
+  font-size:clamp(38px,9vw,86px);letter-spacing:-.01em;text-align:center;white-space:nowrap;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:callIn 1.6s var(--spring) forwards;filter:drop-shadow(0 0 32px rgba(139,92,246,.75))}
+.bigcall.bad{background:linear-gradient(100deg,#FB7185,#F43F5E,#FDA4AF);-webkit-background-clip:text;background-clip:text;
+  filter:drop-shadow(0 0 34px rgba(251,113,133,.8));animation:callBad 1.5s cubic-bezier(.2,1.3,.4,1) forwards}
+@keyframes callIn{0%{opacity:0;transform:translateX(-50%) scale(.25) rotate(-9deg)}
+  18%{opacity:1;transform:translateX(-50%) scale(1.28) rotate(3deg)}
+  32%{transform:translateX(-50%) scale(1) rotate(-1.5deg)}
+  44%{transform:translateX(-50%) scale(1.1) rotate(0deg)}
+  80%{opacity:1;transform:translateX(-50%) scale(1.02)}
+  100%{opacity:0;transform:translateX(-50%) scale(1.14) translateY(-46px)}}
+@keyframes callBad{0%{opacity:0;transform:translateX(-50%) scale(2.2) rotate(6deg)}
+  16%{opacity:1;transform:translateX(-50%) scale(.9) rotate(-4deg)}
+  26%{transform:translateX(-50%) scale(1.12) rotate(3deg)}
+  38%{transform:translateX(-50%) scale(.98) rotate(-2deg)}
+  50%{transform:translateX(-50%) scale(1.04) rotate(0deg)}
+  82%{opacity:1}
+  100%{opacity:0;transform:translateX(-50%) scale(.86) translateY(34px)}}
+/* ===== GIANT STAMPS — the exaggerated reaction ===== */
+.mega{position:fixed;left:50%;top:47%;z-index:999;pointer-events:none;user-select:none;line-height:1;
+  font-size:clamp(150px,33vw,330px);filter:drop-shadow(0 22px 48px rgba(0,0,0,.75))}
+.mega.down{animation:megaDown 1.5s cubic-bezier(.18,.85,.3,1) forwards}
+@keyframes megaDown{
+  0%{opacity:0;transform:translate(-50%,-160%) scale(.35) rotate(-42deg)}
+  15%{opacity:1;transform:translate(-50%,-50%) scale(1.42) rotate(9deg)}
+  25%{transform:translate(-50%,-50%) scale(1.02) rotate(-7deg)}
+  36%{transform:translate(-50%,-50%) scale(1.24) rotate(5deg)}
+  47%{transform:translate(-50%,-50%) scale(1.08) rotate(-3deg)}
+  58%{transform:translate(-50%,-50%) scale(1.15) rotate(0deg)}
+  78%{opacity:.95;transform:translate(-50%,-50%) scale(1.12)}
+  100%{opacity:0;transform:translate(-50%,26%) scale(.82) rotate(17deg)}}
+.mega.up{animation:megaUp 1.25s cubic-bezier(.2,1.35,.35,1) forwards}
+@keyframes megaUp{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.15) rotate(-16deg)}
+  20%{opacity:1;transform:translate(-50%,-50%) scale(1.3) rotate(7deg)}
+  34%{transform:translate(-50%,-50%) scale(1) rotate(-4deg)}
+  48%{transform:translate(-50%,-50%) scale(1.14) rotate(0deg)}
+  72%{opacity:.9}
+  100%{opacity:0;transform:translate(-50%,-130%) scale(1.3) rotate(6deg)}}
+/* ===== flashes / vignettes ===== */
+.flash{position:fixed;inset:0;z-index:997;pointer-events:none;background:radial-gradient(circle at 50% 45%,rgba(255,255,255,.34),transparent 62%);animation:flashF .55s ease-out forwards}
+@keyframes flashF{to{opacity:0}}
+.greenflash{position:fixed;inset:0;z-index:996;pointer-events:none;background:radial-gradient(circle at 50% 45%,rgba(74,222,128,.30),transparent 64%);animation:flashF .6s ease-out forwards}
+.redflash{position:fixed;inset:0;z-index:996;pointer-events:none;background:radial-gradient(circle at 50% 45%,rgba(251,113,133,.34),transparent 58%);animation:flashF .7s ease-out forwards}
+.vignette{position:fixed;inset:0;z-index:996;pointer-events:none;box-shadow:inset 0 0 190px 60px rgba(244,63,94,.75);animation:vig .95s ease-out forwards}
+@keyframes vig{0%{opacity:0}14%{opacity:1}100%{opacity:0}}
+.vignette.good{box-shadow:inset 0 0 180px 54px rgba(74,222,128,.62);animation-duration:.85s}
+.shakeit{animation:bodyShake .48s}
+@keyframes bodyShake{0%,100%{transform:translate(0,0)}12%{transform:translate(-13px,4px) rotate(-.5deg)}26%{transform:translate(13px,-4px) rotate(.5deg)}40%{transform:translate(-10px,3px)}54%{transform:translate(10px,-3px)}68%{transform:translate(-6px,2px)}84%{transform:translate(6px,-2px)}}
+.zoomit{animation:bodyZoom .5s var(--spring)}
+@keyframes bodyZoom{0%,100%{transform:scale(1)}35%{transform:scale(1.014)}}
+/* ===== crackers ===== */
+.spark{position:fixed;z-index:998;pointer-events:none;animation:crkX var(--d) linear forwards}
+.spark i{display:block;border-radius:50%;animation:crkY var(--d) cubic-bezier(.14,.72,.36,1) forwards, crkF var(--d) ease-in forwards}
+@keyframes crkX{from{transform:translateX(0)}to{transform:translateX(var(--tx))}}
+@keyframes crkY{0%{transform:translateY(0)}58%{transform:translateY(var(--ty))}100%{transform:translateY(calc(var(--ty) + 96px))}}
+@keyframes crkF{0%,55%{opacity:1}100%{opacity:0}}
+.boom{position:fixed;z-index:998;pointer-events:none;border:3px solid #fff;border-radius:50%;margin:0;animation:crkR .68s cubic-bezier(.1,.7,.3,1) forwards}
+@keyframes crkR{from{transform:translate(-50%,-50%) scale(.05);opacity:.98}to{transform:translate(-50%,-50%) scale(1);opacity:0}}
+.rocket{position:fixed;z-index:998;pointer-events:none;width:4px;height:16px;border-radius:3px;margin-left:-2px;animation:crkL var(--rd) cubic-bezier(.25,.5,.4,1) forwards}
+@keyframes crkL{from{transform:translateY(0) scaleY(1.35);opacity:.15}60%{opacity:1}to{transform:translateY(var(--ry)) scaleY(.7);opacity:.85}}
+/* ===== thumbs — the shower ===== */
+.tdown{position:fixed;z-index:998;pointer-events:none;user-select:none;line-height:1;filter:drop-shadow(0 3px 9px rgba(0,0,0,.6))}
+.tdown.pop{animation:tdPop var(--d) cubic-bezier(.2,.7,.35,1) forwards}
+@keyframes tdPop{0%{opacity:0;transform:translate(0,0) rotate(0deg) scale(.25)}
+  12%{opacity:1}
+  100%{opacity:0;transform:translate(var(--tx),var(--ty)) rotate(var(--rot)) scale(1.25)}}
+.tdown.rain{animation:tdRain var(--d) linear forwards}
+@keyframes tdRain{0%{opacity:0;transform:translateY(-40px) rotate(0deg)}
+  9%{opacity:1}
+  86%{opacity:1}
+  100%{opacity:0;transform:translateY(var(--ty)) rotate(var(--rot))}}
+.confetti{position:fixed;width:11px;height:15px;top:-20px;z-index:998;pointer-events:none;border-radius:2px}
+/* ===== toast ===== */
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-160px);z-index:1001;background:rgba(9,13,28,.95);border:1px solid var(--gold);border-radius:14px;padding:12px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 40px rgba(0,0,0,.5);transition:transform .5s var(--spring);max-width:92vw}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast .em{font-size:26px}.toast .tt{font-weight:700}.toast .td{font-size:12px;color:var(--muted)}
+/* ===== quiz ===== */
+.qgroup-h{display:flex;align-items:center;gap:12px;margin:26px 2px 12px;scroll-margin-top:110px}
+.qgroup-h .gi{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-weight:700;background:var(--grad);color:#08111f;font-size:13px}
+.qgroup-h .gt{font-size:17px;font-weight:700}.qgroup-h .gc{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)}
+.qcard{background:var(--glass);border:1px solid var(--glass-brd);border-radius:16px;padding:20px 22px;margin-bottom:14px;backdrop-filter:blur(8px);transition:box-shadow .35s,border-color .35s}
+.qcard.hitgood{border-color:rgba(74,222,128,.55);box-shadow:0 0 40px rgba(74,222,128,.22)}
+.qcard.hitbad{border-color:rgba(251,113,133,.55);box-shadow:0 0 40px rgba(251,113,133,.22)}
+.qnum{font-family:'JetBrains Mono',monospace;color:var(--muted);font-size:12px;margin-bottom:6px;display:flex;gap:10px;align-items:center}
+.footbar{position:fixed;bottom:0;left:0;right:0;z-index:60;padding:10px 18px;background:rgba(9,13,28,.92);backdrop-filter:blur(14px);border-top:1px solid var(--glass-brd);display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.footbar .fp{flex:1;min-width:160px;display:flex;flex-direction:column;gap:5px}
+.footbar .fp .lbl{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.footbar .fp .bar{height:7px;border-radius:7px;background:rgba(255,255,255,.08);overflow:hidden}
+.footbar .fp .bar i{display:block;height:100%;width:0;border-radius:7px;background:var(--grad);transition:width .5s var(--spring)}
+.ring-wrap{display:flex;gap:30px;align-items:center;flex-wrap:wrap;justify-content:center}
+.ring{position:relative;width:200px;height:200px}.ring svg{transform:rotate(-90deg)}
+.ring .mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring .mid .big{font-size:44px;font-weight:700;font-family:'JetBrains Mono',monospace;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.ring .mid .sm{font-size:12px;color:var(--muted);letter-spacing:.1em}
+.grade{font-size:24px;font-weight:700;margin:4px 0}
+.meters{margin-top:24px;display:grid;gap:12px}
+.meter .top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}.meter .top .sc{font-family:'JetBrains Mono',monospace;color:var(--cyan)}
+.meter .bar{height:9px;border-radius:9px;background:rgba(255,255,255,.07);overflow:hidden}.meter .bar i{display:block;height:100%;width:0;border-radius:9px;background:var(--grad);transition:width .8s var(--spring)}
+/* ===== badges panel ===== */
+.ovl{position:fixed;inset:0;z-index:200;background:rgba(4,7,18,.72);backdrop-filter:blur(6px);display:grid;place-items:start center;padding:80px 16px 40px;overflow-y:auto;animation:fadeIn .25s ease both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.ovl .card{max-width:720px;width:100%;margin:0}
+.ovl #cmapOvl,.ovl.wide .card{max-width:900px}
+#cmapOvl .card{max-width:900px}
+.ovl .x{position:absolute;top:18px;right:20px;font-size:26px;line-height:1;color:var(--muted);cursor:pointer;background:none;border:0;font-family:inherit}
+.ovl .x:hover{color:#fff}
+.badgegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:14px}
+.bcard{background:rgba(255,255,255,.03);border:1px solid var(--glass-brd);border-radius:14px;padding:14px;text-align:center;opacity:.45;transition:.3s}
+.bcard.unlocked{opacity:1;border-color:rgba(251,191,36,.5);box-shadow:0 0 22px rgba(251,191,36,.12)}
+.bcard .em{font-size:30px}.bcard .bn{font-weight:700;font-size:13.5px;margin-top:6px}.bcard .bd{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+/* ===== mix map (cheat-sheet) ===== */
+.cm-block{margin-top:22px}
+.cm-block h4{margin:0 0 3px;font-size:15px;color:#fff}
+.cm-block .cm-note{font-size:12.5px;color:var(--muted);line-height:1.5;margin:0 0 10px}
+.cm-scroll{overflow-x:auto;border:1px solid var(--glass-brd);border-radius:12px}
+.cm-scroll table{border-collapse:collapse;width:100%;min-width:520px}
+.cm-scroll td{padding:9px 12px;font-size:12.8px;line-height:1.5;border-top:1px solid rgba(255,255,255,.07);vertical-align:top}
+.cm-scroll tr:first-child td{border-top:0}
+.cm-scroll td:first-child{font-weight:600;color:var(--cyan);white-space:nowrap;background:rgba(34,211,238,.05)}
+.cm-scroll td small{color:var(--muted);font-weight:400;font-size:10.5px}
+.cm-scroll td b{color:var(--gold)}
+.hidden{display:none!important}
+@media(max-width:880px){.wrap{grid-template-columns:1fr;padding:6px 12px 104px}aside{position:static;max-height:none;order:2;margin-top:22px}}
+@media(max-width:620px){
+  header{margin:8px;border-radius:16px}
+  .hdr-in{padding:9px 12px;gap:8px 10px;border-radius:14px}
+  .brand{min-width:0;flex:1 1 120px}
+  .brand .k{font-size:8.5px;letter-spacing:.14em}
+  .brand .t{font-size:14.5px}
+  .brand .s,.tagline{display:none}
+  .hud{margin-left:auto;width:auto;gap:8px}
+  .lvl{min-width:0;width:70px;gap:2px}
+  .lvl .top{justify-content:flex-end}
+  .lvl .top .ti{display:none}
+  .lvl .top .xp{font-size:10px}
+  .lvl .bar{height:6px}
+  .chip{padding:5px 8px;font-size:12.5px;gap:4px}
+  .chip .lab{display:none}
+  .card{padding:20px 16px}
+  .qcard{padding:16px 14px}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.05s!important}}
+
+/* scope switch + focus states on the section list */
+.topic.scope{border-bottom:1px dashed var(--glass-brd)}
+.topic.on{background:rgba(34,211,238,.10);box-shadow:inset 3px 0 0 var(--cyan)}
+.topic.off{opacity:.42}
+.topic.pulse{animation:pulseit .6s ease}
+@keyframes pulseit{0%,100%{transform:none}40%{transform:translateX(4px)}}
+/* ===== mode toggle ===== */
+.mtog{display:flex;gap:4px;background:rgba(255,255,255,.05);border:1px solid var(--glass-brd);border-radius:13px;padding:4px}
+.mtog button{border:0;background:transparent;color:var(--muted);font-family:inherit;font-weight:600;font-size:12.5px;
+  padding:7px 14px;border-radius:10px;cursor:pointer;transition:.25s;white-space:nowrap}
+.mtog button.on{background:var(--grad);color:#08111f;box-shadow:0 4px 16px rgba(139,92,246,.35)}
+.mtog button:not(.on):hover{color:#fff}
+/* ===== lesson steps ===== */
+.lstep{margin:0 0 16px;animation:popIn .45s var(--spring) both}
+.lstep h4{margin:0 0 7px;font-size:15.5px;color:#fff;display:flex;align-items:center;gap:8px}
+.lstep h4 .n{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);border:1px solid rgba(34,211,238,.4);
+  background:rgba(34,211,238,.1);border-radius:7px;padding:2px 7px;flex:0 0 auto}
+.lstep p{margin:0;font-size:14.5px;line-height:1.65;color:#D6DDF7}
+.lstep p b{color:#fff}
+.fcard{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.45);border-radius:15px;padding:16px 18px;margin:0 0 16px}
+.fcard .pill{display:block;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;color:#fff;
+  text-align:center;padding:10px 6px;overflow-x:auto;white-space:nowrap}
+.fcard .leg{margin-top:12px;border-top:1px solid rgba(139,92,246,.3);padding-top:11px;display:grid;gap:7px}
+.fcard .leg div{display:flex;gap:11px;font-size:13.5px;line-height:1.5;color:#d9d0ff}
+.fcard .leg b.sym{font-family:'JetBrains Mono',monospace;color:var(--violet);flex:0 0 132px;font-weight:700}
+.ltab{margin:0 0 16px}
+.ltab h4{margin:0 0 9px;font-size:15px;color:#fff}
+.ltab .sc{overflow-x:auto;border:1px solid var(--glass-brd);border-radius:14px}
+.ltab table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:440px}
+.ltab th{background:rgba(255,255,255,.07);color:var(--cyan);text-align:left;padding:10px 13px;font-size:11.5px;
+  letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.ltab td{padding:10px 13px;border-top:1px solid rgba(255,255,255,.08);color:#D6DDF7;line-height:1.5;vertical-align:top}
+.ltab td b{color:#fff}
+/* ===== live calculator ===== */
+.calc{background:rgba(34,211,238,.07);border:1px solid rgba(34,211,238,.4);border-radius:15px;padding:16px 18px;margin:0 0 16px}
+.calc h4{margin:0 0 4px;font-size:14.5px;color:var(--cyan)}
+.calc .hint{font-size:12.5px;color:var(--muted);margin:0 0 13px;line-height:1.5}
+.cin{display:grid;gap:12px;margin-bottom:13px}
+.cin label{display:flex;align-items:center;gap:11px;font-size:13.5px;color:#D6DDF7;flex-wrap:wrap}
+.cin label .nm{flex:1 1 150px;min-width:0}
+.cin input[type=range]{flex:2 1 170px;accent-color:var(--cyan);min-width:110px}
+.cin input[type=number]{flex:0 0 108px;background:rgba(0,0,0,.3);border:1px solid var(--glass-brd);border-radius:9px;
+  color:#fff;font-family:'JetBrains Mono',monospace;font-size:13.5px;padding:7px 10px;width:108px}
+.cin input[type=number]:focus{outline:0;border-color:var(--cyan)}
+.cin .val{font-family:'JetBrains Mono',monospace;font-size:13.5px;color:var(--gold);flex:0 0 78px;text-align:right}
+.cout{background:rgba(0,0,0,.3);border-radius:11px;padding:13px 15px;font-family:'JetBrains Mono',monospace;
+  font-size:13px;line-height:1.75;color:#bfe9f4;white-space:pre-wrap;overflow-x:auto}
+.cout .big{display:block;font-size:19px;color:#fff;font-weight:700;margin-top:7px}
+.cout .vd{display:block;margin-top:9px;padding-top:9px;border-top:1px solid rgba(255,255,255,.14);
+  font-family:'Space Grotesk',sans-serif;font-size:13.5px;line-height:1.55;white-space:normal}
+.cout .vd.ok{color:var(--lime)}.cout .vd.warn{color:var(--gold)}.cout .vd.bad{color:var(--red)}
+/* ===== lesson nav ===== */
+.lnav{display:flex;gap:11px;flex-wrap:wrap;align-items:center;margin-top:20px;padding-top:18px;border-top:1px solid var(--glass-brd)}
+.lnav .sp{flex:1}
+.topic .chk{font-size:12px;color:var(--lime);opacity:0;transition:.3s}
+.topic.learned .chk{opacity:1}
+.topic.learned{border-color:rgba(74,222,128,.32)}
+.kbd{font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid var(--glass-brd);border-bottom-width:2px;border-radius:4px;padding:1px 5px;opacity:.85}
+
+/* ===== case-study box — the multi-part scenario questions ===== */
+.casebox{background:rgba(244,114,182,.08);border:1px solid rgba(244,114,182,.42);border-left:4px solid var(--pink);
+  border-radius:14px;padding:16px 18px;margin:22px 2px 12px;animation:popIn .45s var(--spring) both}
+.casebox .cl{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--pink);font-weight:700}
+.casebox h4{margin:5px 0 8px;font-size:16px;color:#fff}
+.casebox p{margin:0 0 8px;font-size:13.8px;line-height:1.62;color:#F5D9E6}
+.casebox p:last-child{margin-bottom:0}
+.casebox ul{margin:8px 0 0;padding-left:20px;font-size:13.5px;line-height:1.6;color:#F5D9E6}
+.casebox li{margin-bottom:5px}
+.casebox b{color:#fff}
+/* ===== written paper ===== */
+.pq{background:var(--glass);border:1px solid var(--glass-brd);border-radius:16px;padding:20px 22px;margin-bottom:16px;backdrop-filter:blur(8px)}
+.pq .ph{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:9px}
+.pq .pn{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)}
+.pq .mk{font-family:'JetBrains Mono',monospace;font-size:11px;padding:3px 10px;border-radius:999px;
+  background:rgba(251,191,36,.14);color:var(--gold);border:1px solid rgba(251,191,36,.42);margin-left:auto}
+.pq .pqt{font-size:15.5px;line-height:1.6;color:#fff;font-weight:600;margin-bottom:8px}
+.pq .pqt b{color:var(--cyan)}
+.pq .parts{margin:10px 0 0;padding-left:20px;font-size:14px;line-height:1.65;color:#D6DDF7}
+.pq .parts li{margin-bottom:6px}
+.ans{margin-top:14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.4);border-radius:13px;
+  padding:0 16px;max-height:0;overflow:hidden;opacity:0;transition:.45s}
+.ans.show{opacity:1;max-height:6000px;padding:15px 16px}
+.ans h5{margin:0 0 7px;color:var(--lime);font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.ans p{margin:0 0 9px;font-size:13.8px;line-height:1.65;color:#CFEFD8}
+.ans p:last-child{margin-bottom:0}
+.ans b{color:#fff}
+.ans .work{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#d5ffe4;background:rgba(0,0,0,.3);
+  border-radius:9px;padding:10px 12px;margin:9px 0;line-height:1.75;overflow-x:auto;white-space:pre-wrap}
+.ans .rub{margin:11px 0 0;padding:11px 13px;border-radius:10px;background:rgba(251,191,36,.09);border:1px solid rgba(251,191,36,.34)}
+.ans .rub h6{margin:0 0 5px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.ans .rub ul{margin:0;padding-left:18px;font-size:13px;line-height:1.6;color:#ffeec4}
+.ans .rub li{margin-bottom:3px}
+.pq .btn-rev{margin-top:12px}
+/* ===== supply & demand diagram ===== */
+.dsg{margin:12px 0 4px;background:rgba(0,0,0,.26);border:1px solid var(--glass-brd);border-radius:13px;padding:12px;overflow-x:auto}
+.dsg svg{display:block;margin:0 auto;max-width:100%;height:auto}
+.dsg .cap{font-size:12px;color:var(--muted);text-align:center;margin-top:7px;line-height:1.5}
+/* ===== exam-day panel ===== */
+.plan{display:grid;gap:11px;margin-top:14px}
+.pstep{display:flex;gap:13px;align-items:flex-start;background:rgba(255,255,255,.04);border:1px solid var(--glass-brd);
+  border-radius:13px;padding:13px 15px}
+.pstep .pi{flex:0 0 30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--grad);
+  color:#08111f;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px}
+.pstep .pt{font-size:14px;line-height:1.55;color:#D6DDF7}
+.pstep .pt b{color:#fff}
+/* mode toggle gets a third button — let it wrap on small screens */
+.mtog{flex-wrap:wrap}
+@media(max-width:620px){.mtog button{padding:6px 9px;font-size:11.5px}}
+
+/* =========================================================================
+   SLIMMER HEADER + THE MAP BUTTON
+   The map is the single most useful thing in the app, so it gets a real
+   button of its own between the title and the mode toggle — never a chip
+   in the HUD, and never label-less on a phone. Everything else in the bar
+   loses a few pixels to pay for it.
+   ========================================================================= */
+header{margin:8px;border-radius:16px;padding:2px}
+.hdr-in{padding:7px 12px;gap:10px 12px;border-radius:14px}
+.brand{min-width:0;flex:0 1 auto;line-height:1.15}
+.brand .k{font-size:9px;letter-spacing:.2em}
+.brand .t{font-size:15px}
+.brand .s{display:none}
+.hud{gap:9px}
+.lvl{min-width:120px;gap:2px}
+.lvl .top{font-size:10px}
+.lvl .bar{height:6px}
+.chip{padding:5px 9px;font-size:13px;gap:5px;border-radius:10px}
+.chip .lab{font-size:9px;letter-spacing:.1em}
+.mtog{padding:3px;border-radius:11px}
+.mtog button{padding:6px 11px;font-size:12px;border-radius:9px}
+
+/* the map button itself */
+.mapbtn{display:flex;align-items:center;gap:9px;cursor:pointer;border:0;font-family:inherit;
+  padding:8px 16px 8px 13px;border-radius:13px;color:#08111f;
+  background:var(--grad);background-size:220% auto;
+  box-shadow:0 5px 20px rgba(139,92,246,.45);transition:.25s var(--spring);
+  animation:mapPulse 2.6s ease-in-out infinite}
+.mapbtn:hover{background-position:100% center;transform:translateY(-2px) scale(1.04);
+  box-shadow:0 9px 30px rgba(139,92,246,.65);animation:none}
+.mapbtn:active{transform:translateY(0) scale(.98)}
+.mapbtn .mi{font-size:22px;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+.mapbtn .mt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}
+.mapbtn .mt b{font-size:13.5px;font-weight:700;letter-spacing:.09em}
+.mapbtn .mt small{font-size:9.5px;font-weight:600;opacity:.72;letter-spacing:.04em}
+@keyframes mapPulse{
+  0%,100%{box-shadow:0 5px 20px rgba(139,92,246,.45)}
+  50%{box-shadow:0 5px 26px rgba(34,211,238,.75),0 0 0 4px rgba(34,211,238,.16)}}
+
+/* the header is shorter now, so the sticky offsets come up with it.
+   Scoped above 880px, where the sidebar is actually sticky — below that the
+   earlier breakpoint drops it to static and this must not clip it. */
+@media(min-width:881px){aside{top:76px;max-height:calc(100vh - 96px)}}
+.qgroup-h{scroll-margin-top:86px}
+
+@media(max-width:620px){
+  header{margin:6px}
+  .hdr-in{padding:6px 9px;gap:7px 8px}
+  .brand .t{font-size:13.5px}
+  .mapbtn{padding:6px 12px 6px 10px;gap:7px;border-radius:11px}
+  .mapbtn .mi{font-size:18px}
+  .mapbtn .mt b{font-size:12px}
+  .mapbtn .mt small{display:none}
+}
+/* =========================================================================
+   EXAM-PATTERN LAYER — caselets with data tables, and written answers.
+   The real End Term paper hands you a table and asks you to read it, so the
+   table has to look like a table, not like prose.
+   ========================================================================= */
+.caselet{background:rgba(244,114,182,.07);border:1px solid rgba(244,114,182,.4);border-left:4px solid var(--pink);
+  border-radius:16px;padding:18px 20px;margin:26px 2px 14px;animation:popIn .45s var(--spring) both;scroll-margin-top:86px}
+.caselet .cl{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--pink);font-weight:700}
+.caselet h4{margin:5px 0 9px;font-size:17px;color:#fff}
+.caselet .brief{font-size:13.8px;line-height:1.62;color:#F5D9E6}
+.caselet .brief b{color:#fff}
+.caselet .brief p{margin:0 0 7px}
+.caselet .brief p:last-child{margin-bottom:0}
+.caselet .facts{display:flex;flex-wrap:wrap;gap:7px;margin:11px 0 0}
+.caselet .facts span{font-family:'JetBrains Mono',monospace;font-size:11.5px;padding:5px 10px;border-radius:9px;
+  background:rgba(0,0,0,.3);border:1px solid rgba(244,114,182,.35);color:#ffd9ea}
+/* data tables */
+.dtab{margin:14px 0 0}
+.dtab .cap{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--pink);font-weight:700;margin:0 0 7px}
+.dtab .sc{overflow-x:auto;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(0,0,0,.28)}
+.dtab table{border-collapse:collapse;width:100%;min-width:440px;font-family:'JetBrains Mono',monospace;font-size:12.5px}
+.dtab th{background:rgba(255,255,255,.07);color:var(--cyan);text-align:left;padding:9px 12px;font-size:11px;
+  letter-spacing:.06em;text-transform:uppercase;font-weight:700;white-space:nowrap;font-family:'Space Grotesk',sans-serif}
+.dtab td{padding:8px 12px;border-top:1px solid rgba(255,255,255,.08);color:#E7ECFF;white-space:nowrap}
+.dtab tr td:first-child{color:#fff;font-weight:700;font-family:'Space Grotesk',sans-serif}
+.dtab tr:hover td{background:rgba(255,255,255,.035)}
+.dtab td.num{text-align:right}
+/* written (open-ended) questions */
+.openq{background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.42);border-radius:16px;padding:20px 22px;margin-bottom:14px}
+.openq .oh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.openq .on{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)}
+.openq .om{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:3px 10px;border-radius:999px;
+  background:rgba(251,191,36,.15);color:var(--gold);border:1px solid rgba(251,191,36,.45);margin-left:auto}
+.openq .oq{font-size:15.5px;line-height:1.6;color:#fff;font-weight:600}
+.openq .hint{font-size:12.5px;color:var(--muted);margin:9px 0 0;line-height:1.55}
+@media(max-width:620px){
+  .caselet{padding:14px 14px;margin:20px 0 12px}
+  .dtab table{font-size:11.5px;min-width:380px}
+  .dtab th,.dtab td{padding:7px 9px}
+  .openq{padding:16px 14px}
+}</style>
+</head>
+<body>
+<div class="bg-fx"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div><div class="orb d"></div></div>
+<div class="grid-fx"></div>
+
+<header>
+  <div class="hdr-in">
+    <div class="brand">
+      <span class="k">MBA · MODERN TRADE</span>
+      <span class="t">Modern Trade<span class="tagline"> · MT1–MT4</span></span>
+    </div>
+    <button class="mapbtn" id="hMap" title="The Map — the whole course on one page">
+      <span class="mi">📋</span>
+      <span class="mt"><b>THE MAP</b><small>full cheat-sheet</small></span>
+    </button>
+    <div class="mtog" id="mTog"></div>
+    <div class="hud">
+      <div class="lvl">
+        <div class="top"><span class="ti" id="hLvl">Intern</span><span class="xp" id="hXp">0 XP</span></div>
+        <div class="bar"><i id="hBar"></i></div>
+      </div>
+      <div class="chip streak" id="hStreak"><span id="hStreakEm">🔥</span><span id="hStreakN">0</span><span class="lab">streak</span></div>
+      <div class="chip badge" id="hBadge" title="View badges"><span>🏅</span><span id="hBadgeN">0</span><span class="lab">badges</span></div>
+      <div class="chip snd" id="hSnd" title="Sound on / off"><span id="hSndEm">🔊</span><span class="lab">sound</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <aside>
+    <div class="side-h" id="sideH">Sections</div>
+    <div class="pbar"><i id="pbar"></i></div>
+    <div id="topicList"></div>
+  </aside>
+  <main id="main"></main>
+</div>
+<div class="toast" id="toast"><span class="em" id="toEm">🏅</span><div><div class="tt" id="toTt"></div><div class="td" id="toTd"></div></div></div>
+
+<script>
+/* =========================================================================
+   Modern Trade — built on the reusable quiz template
+   ~/projects/quiz-template · see SPEC.md for the authoring rules
+
+   Modules switch on automatically from the data that exists:
+     CASES   → ✍ Exam Paper     (caselets + data tables + written answers)
+     QUIZ    → ⚙ Practice Quiz  (standalone MCQ bank, needs TOPICS)
+     LESSONS → ◈ Prep Material  (lessons + live calculators, needs TOPICS)
+     PAPER   → ✎ Written Paper  (long-form questions + model answers)
+     CMAP    → 📋 THE MAP        (cheat-sheet overlay)
+   ========================================================================= */
+/* ---------- tiny helpers, loaded before everything else ---------- */
+const $=s=>document.querySelector(s), el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const G={xp:0, streak:0, best:0, badges:{}};
+
+/* =========================================================================
+   SOUND — synthesised with WebAudio, no files, no network.
+   The context is created lazily on the first click, which satisfies autoplay.
+   ========================================================================= */
+let AC=null, SOUND=true;
+try{ if(localStorage.getItem('quiz_sound')==='0') SOUND=false; }catch(e){}
+function ac(){
+  if(!AC){ try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return null; } }
+  if(AC.state==='suspended') AC.resume();
+  return AC;
+}
+function tone(freq,at,dur,type,vol,glideTo){
+  const c=ac(); if(!c) return;
+  const t0=c.currentTime+at;
+  const o=c.createOscillator(), g=c.createGain();
+  o.type=type||'sine'; o.frequency.setValueAtTime(freq,t0);
+  if(glideTo) o.frequency.exponentialRampToValueAtTime(Math.max(20,glideTo),t0+dur);
+  g.gain.setValueAtTime(0.0001,t0);
+  g.gain.exponentialRampToValueAtTime(vol||0.18,t0+0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  o.connect(g); g.connect(c.destination);
+  o.start(t0); o.stop(t0+dur+0.03);
+}
+function noise(at,dur,vol,freq){
+  const c=ac(); if(!c) return;
+  const t0=c.currentTime+at, n=Math.floor(c.sampleRate*dur);
+  const buf=c.createBuffer(1,n,c.sampleRate), d=buf.getChannelData(0);
+  for(let i=0;i<n;i++) d[i]=(Math.random()*2-1)*(1-i/n);
+  const src=c.createBufferSource(); src.buffer=buf;
+  const f=c.createBiquadFilter(); f.type='lowpass'; f.frequency.value=freq||900;
+  const g=c.createGain(); g.gain.setValueAtTime(vol||0.2,t0);
+  g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  src.connect(f); f.connect(g); g.connect(c.destination);
+  src.start(t0); src.stop(t0+dur+0.02);
+}
+/* correct — a major arpeggio that climbs higher the longer the streak runs */
+function sfxRight(streak){
+  if(!SOUND) return;
+  const base=523.25*Math.pow(2,Math.min(4,Math.floor((streak-1)/4))/12*2);
+  const notes=[1,1.26,1.5,2];                         // root, M3, P5, octave
+  notes.forEach((m,i)=>tone(base*m,i*0.055,0.26,'triangle',0.17));
+  if(streak>=3) tone(base*2.52,0.235,0.34,'sine',0.13);
+  if(streak>=7){ tone(base*3,0.30,0.4,'sine',0.11); noise(0,0.16,0.09,2600); }
+  if(streak>=12){ [0,.09,.18].forEach((t,i)=>tone(base*(3+i*0.5),0.34+t,0.3,'triangle',0.09)); }
+}
+/* wrong — a fat descending buzzer plus a thud */
+function sfxWrong(){
+  if(!SOUND) return;
+  tone(196,0,0.42,'sawtooth',0.20,72);
+  tone(146.8,0.03,0.46,'square',0.13,58);
+  noise(0,0.28,0.26,420);
+  tone(92,0.16,0.3,'sine',0.16,46);
+}
+function sfxBadge(){ if(!SOUND) return; [784,988,1175,1568].forEach((f,i)=>tone(f,i*0.075,0.3,'triangle',0.15)); }
+function sfxLevel(){ if(!SOUND) return; [392,523,659,784,1047].forEach((f,i)=>tone(f,i*0.07,0.34,'sine',0.16)); }
+function sfxFanfare(){ if(!SOUND) return;
+  [[523,0],[659,.1],[784,.2],[1047,.3],[784,.46],[1047,.56],[1319,.66]].forEach(([f,t])=>tone(f,t,0.5,'triangle',0.16));
+  noise(0.3,0.5,0.08,3200); }
+function sfxSad(){ if(!SOUND) return; [440,392,349,294].forEach((f,i)=>tone(f,i*0.16,0.4,'triangle',0.15)); }
+$('#hSnd').onclick=()=>{
+  SOUND=!SOUND;
+  try{ localStorage.setItem('quiz_sound',SOUND?'1':'0'); }catch(e){}
+  $('#hSndEm').textContent=SOUND?'🔊':'🔇';
+  $('#hSnd').classList.toggle('off',!SOUND);
+  if(SOUND) tone(880,0,0.14,'triangle',0.16);
+};
+
+/* ---------------- HUD ---------------- */
+function levelInfo(){let idx=0;for(let i=0;i<LV.length;i++)if(G.xp>=LV[i].xp)idx=i;
+  const cur=LV[idx], nxt=LV[idx+1];
+  const pct=nxt?((G.xp-cur.xp)/(nxt.xp-cur.xp))*100:100;
+  return {idx,title:cur.title,pct:Math.max(0,Math.min(100,pct))};}
+function renderHUD(){const li=levelInfo();
+  $('#hLvl').textContent=li.title; $('#hXp').textContent=G.xp+' XP'; $('#hBar').style.width=li.pct+'%';
+  $('#hStreakN').textContent=G.streak;
+  const c=$('#hStreak');c.classList.remove('t1','t2','t3');
+  if(G.streak>=12)c.classList.add('t3'); else if(G.streak>=7)c.classList.add('t2'); else if(G.streak>=3)c.classList.add('t1');
+  $('#hStreakEm').textContent=G.streak>=12?'☄️':(G.streak>=7?'💥':'🔥');
+  $('#hBadgeN').textContent=Object.keys(G.badges).length;
+  $('#hSndEm').textContent=SOUND?'🔊':'🔇';
+  $('#hSnd').classList.toggle('off',!SOUND);}
+
+let toastQ=[],toasting=false;
+function toast(em,tt,td){toastQ.push([em,tt,td]);if(!toasting)nextToast();}
+function nextToast(){if(!toastQ.length){toasting=false;return;}toasting=true;const[em,tt,td]=toastQ.shift();
+  $('#toEm').textContent=em;$('#toTt').textContent=tt;$('#toTd').textContent=td;const t=$('#toast');
+  t.classList.add('show');setTimeout(()=>{t.classList.remove('show');setTimeout(nextToast,380);},1900);}
+function unlock(id){if(G.badges[id])return;const b=BG.find(x=>x.id===id);if(!b)return;G.badges[id]=1;
+  G.xp+=50;toast(b.em,'Badge unlocked: '+b.name,'+50 XP · '+b.desc);sfxBadge();renderHUD();}
+function levelUpCheck(before){const a=levelInfo().idx;if(a>before){toast('🚀','Level up! '+LV[a].title,'You reached a new rank.');sfxLevel();}}
+function floater(x,y,txt,color){const f=el('div','floater',txt);f.style.left=x+'px';f.style.top=y+'px';f.style.color=color;document.body.appendChild(f);setTimeout(()=>f.remove(),1300);}
+function bigCall(txt,bad){if(reduced)return;const b=el('div','bigcall'+(bad?' bad':''),txt);document.body.appendChild(b);setTimeout(()=>b.remove(),1700);}
+function mega(emo,up){if(reduced)return;const m=el('div','mega '+(up?'up':'down'),emo);document.body.appendChild(m);setTimeout(()=>m.remove(),1600);}
+
+/* the shout-outs */
+const CALLS={2:'NICE! ✌️',3:'TRIPLE! 🔥',4:'HEATING UP! 🌡️',5:'ON FIRE! 🔥🔥',6:'RAMPAGE! 💥',
+  7:'UNSTOPPABLE! ⚡',8:'MONSTROUS! 👹',10:'GODLIKE! 🌌',12:'INFERNO! ☄️',15:'LEGENDARY! 👑',18:'ELASTIC GOD! 🏛️'};
+const CHEERS=['YES! 🎉','BOOM! 💥','CLEAN! ✨','SHARP! 🎯','NAILED IT! 🔨','CORRECT! ✅','TOO EASY! 😎','CHEF’S KISS 👌'];
+const TAUNTS=['NOPE! 👎','OOF. 👎','BONK! 👎','YIKES. 👎','BRUTAL. 👎','DENIED! 👎','OUCH! 👎','NOT TODAY. 👎'];
+
+function onAnswer(ok,x,y,card){
+  if(ok){
+    G.streak++; G.best=Math.max(G.best,G.streak);
+    const bonus=Math.min(30,Math.max(0,(G.streak-1)*4));    // streak bonus grows with the run
+    const gain=10+bonus;
+    const before=levelInfo().idx; G.xp+=gain; levelUpCheck(before);
+    sfxRight(G.streak);
+    crackers(x,y,G.streak);
+    greenFlash(G.streak);
+    mega(G.streak>=12?'🏆':(G.streak>=7?'💥':(G.streak>=3?'🔥':'👍')),true);
+    floater(x,y,'+'+gain+' XP','var(--lime)');
+    bigCall(CALLS[G.streak]||rnd(CHEERS));
+    if(card){card.classList.add('hitgood');setTimeout(()=>card.classList.remove('hitgood'),1400);}
+    if(!G.badges.b_first)unlock('b_first');
+    if(G.streak===5)unlock('b_streak5');
+    if(G.streak===10)unlock('b_streak10');
+    if(G.streak===15)unlock('b_streak15');
+    renderHUD();
+  } else {
+    const lost=G.streak;
+    G.streak=0;
+    sfxWrong();
+    thumbsDown(x,y,lost);
+    mega('👎',false);
+    bigCall(lost>=3?'STREAK BROKEN! 👎':rnd(TAUNTS),true);
+    floater(x,y,lost>=3?'−'+lost+' streak':'✕','var(--red)');
+    if(card){card.classList.add('hitbad');setTimeout(()=>card.classList.remove('hitbad'),1400);}
+    renderHUD();
+  }
+}
+
+/* ---------- 🎆 crackers — intensity scales with the streak ---------- */
+const CRK=['#22D3EE','#8B5CF6','#F472B6','#4ADE80','#FBBF24','#FB7185','#FFFFFF'];
+function burstAt(x,y,n,spread,size){
+  const ring=el('div','boom');ring.style.left=x+'px';ring.style.top=y+'px';
+  const rs=spread*1.6;ring.style.width=rs+'px';ring.style.height=rs+'px';
+  ring.style.borderColor=rnd(CRK);document.body.appendChild(ring);setTimeout(()=>ring.remove(),740);
+  for(let i=0;i<n;i++){
+    const ang=(i/n)*Math.PI*2+Math.random()*0.4;
+    const r=spread*(0.5+Math.random()*0.75);
+    const s=el('div','spark'),dot=el('i');s.appendChild(dot);
+    s.style.left=x+'px';s.style.top=y+'px';
+    const col=rnd(CRK),w=size*(0.6+Math.random()*0.9);
+    dot.style.background=col;dot.style.boxShadow='0 0 10px '+col+',0 0 22px '+col;
+    dot.style.width=w+'px';dot.style.height=w+'px';
+    const d=0.8+Math.random()*0.6;
+    s.style.setProperty('--tx',(Math.cos(ang)*r).toFixed(1)+'px');
+    s.style.setProperty('--ty',(Math.sin(ang)*r).toFixed(1)+'px');
+    s.style.setProperty('--d',d.toFixed(2)+'s');
+    document.body.appendChild(s);setTimeout(()=>s.remove(),(d+0.4)*1000);
+  }
+}
+function launchTo(x,y,n,spread,size){
+  const rd=0.30+Math.random()*0.18;
+  const rk=el('div','rocket');rk.style.left=x+'px';rk.style.top=innerHeight+'px';
+  const col=rnd(CRK);rk.style.background=col;rk.style.boxShadow='0 0 12px '+col;
+  rk.style.setProperty('--ry',(y-innerHeight)+'px');rk.style.setProperty('--rd',rd.toFixed(2)+'s');
+  document.body.appendChild(rk);
+  setTimeout(()=>{rk.remove();burstAt(x,y,n,spread,size);if(SOUND)noise(0,0.12,0.07,2200);},rd*1000);
+}
+function flash(){if(reduced)return;const f=el('div','flash');document.body.appendChild(f);setTimeout(()=>f.remove(),580);}
+function greenFlash(streak){
+  if(reduced)return;
+  const g=el('div','greenflash');document.body.appendChild(g);setTimeout(()=>g.remove(),620);
+  const v=el('div','vignette good');document.body.appendChild(v);setTimeout(()=>v.remove(),900);
+  document.body.classList.add('zoomit');setTimeout(()=>document.body.classList.remove('zoomit'),520);
+  if(streak>=7)flash();
+}
+/* tier 0: 2 shells · tier 1 (3+): 3 · tier 2 (7+): 5 + white flash
+   tier 3 (12+): 8 shells, wider, plus a confetti barrage                    */
+function crackers(x,y,streak){
+  if(reduced)return;
+  if(x==null||isNaN(x)){x=innerWidth/2;y=innerHeight/2;}
+  const s=streak||1;
+  const tier = s>=12?3 : s>=7?2 : s>=3?1 : 0;
+  const shells=[2,3,5,8][tier];
+  const grow=1.25+tier*0.32;
+  burstAt(x,y,Math.round(20*grow),Math.round(120*grow),7+tier);
+  const W=innerWidth,H=innerHeight;
+  for(let i=0;i<shells;i++){
+    const sx=W*(0.10+Math.random()*0.80), sy=H*(0.10+Math.random()*0.32);
+    setTimeout(()=>launchTo(sx,sy,Math.round(26*grow),Math.round(150*grow),6+tier),70+i*130);
+  }
+  if(tier>=1)confetti(24*tier);
+  if(tier>=3){
+    confetti(90);
+    setTimeout(()=>{for(let i=0;i<4;i++){const sx=W*(0.12+Math.random()*0.76),sy=H*(0.08+Math.random()*0.30);
+      setTimeout(()=>launchTo(sx,sy,36,225,9),i*120);}},720);
+  }
+}
+function confetti(count){if(reduced)return;const cols=['#22D3EE','#8B5CF6','#F472B6','#4ADE80','#FBBF24'];const n=count||100;
+  for(let i=0;i<n;i++){const c=el('div','confetti');c.style.left=Math.random()*100+'vw';c.style.background=cols[i%cols.length];c.style.transform='rotate('+(Math.random()*360)+'deg)';
+    const d=2.4+Math.random()*1.8;c.style.animation='fall '+d+'s linear '+(Math.random()*0.6)+'s forwards';document.body.appendChild(c);setTimeout(()=>c.remove(),(d+1)*1000);}}
+const cst=document.createElement('style');cst.textContent='@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.2}}';document.head.appendChild(cst);
+
+/* ---------- 👎 thumbs down — a full shower, always heavy ---------- */
+function thumbsDown(x,y,lostStreak){
+  if(reduced)return;
+  if(x==null||isNaN(x)){x=innerWidth/2;y=innerHeight/2;}
+  const rf=el('div','redflash');document.body.appendChild(rf);setTimeout(()=>rf.remove(),720);
+  const vg=el('div','vignette');document.body.appendChild(vg);setTimeout(()=>vg.remove(),980);
+  document.body.classList.add('shakeit');setTimeout(()=>document.body.classList.remove('shakeit'),500);
+  /* the bigger the streak you just torched, the heavier the shower */
+  const extra=Math.min(26,(lostStreak||0)*3);
+  const popN=22+extra, rainN=20+extra;
+  for(let i=0;i<popN;i++){                       // burst outward from the tapped option
+    const t=el('div','tdown pop','👎');
+    const ang=(i/popN)*Math.PI*2+Math.random()*0.5;
+    const r=110+Math.random()*230;
+    const d=1.0+Math.random()*0.8;
+    t.style.left=x+'px';t.style.top=y+'px';
+    t.style.fontSize=(24+Math.random()*38).toFixed(0)+'px';
+    t.style.setProperty('--tx',(Math.cos(ang)*r).toFixed(1)+'px');
+    t.style.setProperty('--ty',(Math.sin(ang)*r+150).toFixed(1)+'px');
+    t.style.setProperty('--rot',((Math.random()-0.5)*720).toFixed(0)+'deg');
+    t.style.setProperty('--d',d.toFixed(2)+'s');
+    document.body.appendChild(t);setTimeout(()=>t.remove(),(d+0.3)*1000);
+  }
+  for(let i=0;i<rainN;i++){                      // and a shower down the whole screen
+    const t=el('div','tdown rain','👎');
+    const d=1.5+Math.random()*1.6;
+    t.style.left=(Math.random()*96)+'vw';t.style.top='-50px';
+    t.style.fontSize=(22+Math.random()*40).toFixed(0)+'px';
+    t.style.setProperty('--ty',(innerHeight+150)+'px');
+    t.style.setProperty('--rot',((Math.random()-0.5)*900).toFixed(0)+'deg');
+    t.style.setProperty('--d',d.toFixed(2)+'s');
+    t.style.animationDelay=(Math.random()*0.6).toFixed(2)+'s';
+    document.body.appendChild(t);setTimeout(()=>t.remove(),(d+1.2)*1000);
+  }
+}
+
+
+/* =========================================================================
+   MODERN TRADE (MT) — sessions MT1–MT4
+   Modules: Practice Quiz + Prep Material + Map. No exam paper, no written paper.
+   ========================================================================= */
+
+const CONFIG={
+  quizEyebrow:'Modern Trade · MT1–MT4',
+  quizTitle:'The practice bank',
+  quizIntro:'Eight sections, one per block of the decks. Click a section in the sidebar to drill it alone; the 🃏 questions turn on a distinction that is easy to get backwards.',
+  mapTitle:'The Modern Trade Map',
+  mapIntro:'Every table in MT1–MT4, compressed. Scan this the hour before the paper.',
+  examDayPlan:[
+   '<b>Name the channel first.</b> Most MT questions are OT vs GT vs e-com in disguise — decide which column you are in before you answer.',
+   '<b>Construct ≠ format.</b> Store count tells you who decides (owner, central buyer, category team); store size tells you the format (hyper, super, mini).',
+   '<b>Quote the deck’s examples.</b> DMart, Smart Bazaar, Nature’s Basket, Ratnadeep, METRO, Apollo, Nykaa — a named example signals revision.',
+   '<b>For any “how does the FMCG company work with…” question</b>, walk the same rows: buying, listing, assortment, pricing, promotions, supply, visibility, data, relationship.'
+  ]
+};
+
+const TOPICS=[
+ {id:'ot',        name:'OT vs GT vs E-com',          kick:'the three channels, row by row', hot:true},
+ {id:'shopper',   name:'The MT Shopper',             kick:'5 shopper types, 6 behaviours, 7-step journey'},
+ {id:'layout',    name:'Store Layouts',              kick:'grid, loop, free-flow, spine, hybrid', hot:true},
+ {id:'supply',    name:'Supply Chain',               kick:'DC-led vs distributor-led'},
+ {id:'category',  name:'Category in MT',             kick:'why it matters, who sells what'},
+ {id:'construct', name:'Retailer Construct & Formats',kick:'store count, size and ways of working', hot:true},
+ {id:'specialty', name:'Pharmacy & Beauty',          kick:'specialty MT channels'},
+ {id:'org',       name:'Sales & Category Teams',     kick:'who sits across the table'}
+];
+
+/* =========================================================================
+   QUIZ
+   ========================================================================= */
+const QUIZ=[
+/* ---------------- OT vs GT vs E-com ---------------- */
+ {t:'ot',tag:'concept',diff:'easy',trap:true,
+  q:'MT1 compresses the whole GT–OT difference into one line. Which is it?',
+  opts:['GT is relationship-led and outlet-led; OT is system-led and category-led',
+        'GT is system-led and category-led; OT is relationship-led and outlet-led',
+        'GT is price-led and scheme-led; OT is brand-led and display-led today',
+        'GT is distributor-led and rural; OT is retailer-led and mostly urban'],
+  why:'<b>GT = relationship + outlet. OT = system + category.</b> A kirana sale is won one outlet at a time, through the salesman’s relationship with the owner. A DMart sale is won through systems (central buying, DC replenishment, POS data) and is managed category by category.<div class="work">GT  → relationship-led · outlet-led\nOT  → system-led · category-led</div>The trap is the swapped version — it reads fine if you skim. Remember it by the kirana: no planogram, no category manager, just the owner and the salesman.<br><br>This one line explains nearly every other row in the comparison tables.'},
+
+ {t:'ot',tag:'concept',diff:'easy',
+  q:'In Organised Trade, who is the <b>decision maker</b> an FMCG company has to convince?',
+  opts:['The category manager / buyer / commercial team of the chain',
+        'The individual store owner, who decides store by store',
+        'The platform category manager plus the ranking algorithm',
+        'The distributor’s salesman, who places stock at each outlet'],
+  why:'<b>OT decisions sit with the chain’s category manager, buyer or commercial team</b> — centrally, not in the store.<div class="work">OT     → category manager / buyer / commercial team\nGT     → individual retailer\nE-com  → platform category manager + algorithm/customer</div>“Store owner” is the GT answer and “algorithm” is the e-commerce answer. The salesman influences GT, but he is not the decision maker anywhere.<br><br>If the question says <i>organised</i>, think head office, not the shop floor.'},
+
+ {t:'ot',tag:'apply',diff:'medium',
+  q:'A brand is fighting for shelf visibility in a neighbourhood kirana. Per the MT1 table, what does visibility in GT depend on most?',
+  opts:['The relationship with that individual retailer',
+        'A display contract negotiated with the chain centrally',
+        'Search ranking and sponsored listings on the platform',
+        'The planogram that the retailer’s head office issues'],
+  why:'<b>GT shelf visibility “depends heavily on retailer relationship”.</b> There is no head office and no planogram — the owner decides what goes at eye level, and the salesman’s relationship (plus schemes) is the lever.<div class="work">Shelf visibility\n  OT    → critical; negotiated shelf/display space\n  GT    → depends heavily on retailer relationship\n  E-com → digital visibility / search ranking</div>A centrally negotiated contract and a planogram are both OT answers dressed up. Search ranking is e-commerce.<br><br>In GT the relationship is the asset; in OT the contract is.'},
+
+ {t:'ot',tag:'concept',diff:'easy',
+  q:'Where is inventory held in the <b>e-commerce</b> channel?',
+  opts:['Warehouse / dark store / fulfilment centre',
+        'Store plus the chain’s distribution centre',
+        'Retailer’s backroom plus the distributor',
+        'The manufacturer’s own factory depot only'],
+  why:'<b>E-com inventory sits in warehouses, dark stores and fulfilment centres (FC).</b> Blinkit and Zepto run on dark stores; Amazon and Flipkart on FCs.<div class="work">Inventory\n  OT    → store + distribution centre / warehouse\n  GT    → retailer’s backroom + distributor\n  E-com → warehouse / dark store / FC</div>Each wrong option is the right answer for a different column — which is exactly how the paper will set it.<br><br>Learn the inventory row as a three-way set, not one answer at a time.'},
+
+ {t:'ot',tag:'apply',diff:'medium',
+  q:'Which channel does the deck describe as having pricing that is <b>“highly dynamic and promotion-driven”</b>?',
+  opts:['E-commerce',
+        'Organised Trade',
+        'General Trade',
+        'Cash & carry'],
+  why:'<b>E-commerce pricing is “highly dynamic and promotion-driven”</b> — prices on Amazon or Blinkit can move several times a day with coupons and platform promotions.<div class="work">Pricing\n  OT    → more centrally controlled\n  GT    → retailer-dependent within market norms\n  E-com → highly dynamic and promotion-driven</div>OT is the opposite: <i>centrally controlled</i> prices across the chain. GT sits between — the retailer sets the price, but within what the market will bear.<br><br>(The slide prints “marker norms” — a typo for <i>market</i> norms.)'},
+
+ {t:'ot',tag:'apply',diff:'easy',
+  q:'A brand plan includes a <b>listing fee</b> and a negotiated gondola-end display. Which channel is this plan for?',
+  opts:['Organised Trade',
+        'General Trade',
+        'E-commerce',
+        'Any of them — these levers apply equally'],
+  why:'<b>Listing fees and negotiated displays are OT promotion levers.</b><div class="work">Promotion\n  OT    → listing fees, trade promotions, displays,\n          visibility, category promotions\n  GT    → retailer schemes, discounts, displays,\n          salesman influence\n  E-com → search ranking, sponsored listings,\n          coupons, platform promotions</div>GT has displays too, but nobody charges a listing fee to get into a kirana — the owner just stocks what sells. E-com buys visibility through sponsored listings, not gondola ends.<br><br>“Listing fee” is the giveaway word: it only exists where a central buyer controls entry.'},
+
+ {t:'ot',tag:'concept',diff:'medium',
+  q:'Which channel–ownership pairing matches the MT1 comparison table?',
+  opts:['E-commerce — platform plus sellers / brands',
+        'General Trade — corporate / organised chain',
+        'Organised Trade — individual retailer owner',
+        'E-commerce — individual retailer with an app'],
+  why:'<b>Ownership: OT = usually corporate/organised chain; GT = individual retailer; e-com = platform + sellers/brands.</b><div class="work">Ownership\n  OT    → usually corporate / organised chain\n  GT    → individual retailer\n  E-com → platform + sellers / brands</div>The two middle options swap OT and GT. The last one confuses a kirana taking WhatsApp orders with an e-commerce marketplace.<br><br>E-com is a two-sided model: the platform owns the storefront, sellers or brands own the stock.'},
+
+ {t:'ot',tag:'apply',diff:'medium',trap:true,
+  q:'Who decides the assortment in a kirana store?',
+  opts:['The retailer — GT assortment is retailer-specific',
+        'The FMCG company’s category team, centrally',
+        'A central buying team, store cluster by store cluster',
+        'The distributor, through a fixed planogram it issues'],
+  why:'<b>GT assortment is “retailer-specific”.</b> The kirana owner stocks what his customers ask for, fed by the distributor’s salesman. Nobody centrally plans it.<div class="work">Assortment\n  OT    → planned and centrally controlled\n  GT    → retailer-specific\n  E-com → very broad virtual assortment</div>“Store cluster” is the MT phrase from MT2’s supply-chain table — it is the trap. The distributor influences what is offered, but issues no planogram.<br><br>Centrally planned = OT. Retailer-specific = GT.'},
+
+ {t:'ot',tag:'concept',diff:'easy',core:0,
+  q:'Which retailers does MT1 list as examples of <b>General Trade</b>?',
+  opts:['Kirana stores, provision stores, chemists, small supermarkets',
+        'Reliance Retail, DMart, Spencer’s, More and Star Bazaar',
+        'Amazon, Flipkart, BigBasket, Blinkit and Zepto platforms',
+        'Pantaloons, Lifestyle, Shoppers Stop and Croma lifestyle outlets'],
+  why:'<b>GT = kiranas, provision stores, chemists and small (independent) supermarkets.</b> “Traditional independent retail outlets.”<div class="work">OT    → Reliance Retail, DMart, Spencer’s, More, Star Bazaar\nGT    → kiranas, provision stores, chemists, small supermarkets\nE-com → Amazon, Flipkart, BigBasket, Blinkit, Zepto</div>Pantaloons, Lifestyle, Shoppers Stop and Croma appear on the MT1 “Examples of OT” slide — organised, just not grocery.<br><br>A small supermarket can be GT: what makes it GT is independent ownership, not its size.'},
+
+/* ---------------- The MT Shopper ---------------- */
+ {t:'shopper',tag:'apply',diff:'easy',
+  q:'A shopper picks up a chocolate bar at the checkout counter she had no plan to buy. What FMCG implication does MT1 attach to this shopper?',
+  opts:['Secondary displays, checkout placement and attractive packaging',
+        'Promotions, price-offs and multi-packs that trigger a switch at shelf',
+        'Availability of preferred pack sizes and monthly value packs',
+        'Cold cabinets, quick-commerce listing and on-the-go packs'],
+  why:'<b>Impulse shopper → secondary displays, checkout placement, attractive packaging.</b> The purchase is triggered by visibility, appetite or curiosity, so the lever is being seen at the right moment.<div class="work">Planned       → availability, preferred pack sizes, value packs\nDeal-seeking  → promotions, price-offs, multi-packs\nImpulse       → secondary displays, checkout placement, packaging\nConvenience   → cold cabinets, quick commerce, on-the-go packs\nBrand-loyal   → availability, quality, consistent experience</div>A price-off is the deal-seeker’s lever — the impulse shopper did not compare prices at all.<br><br>Match the lever to what <i>triggered</i> the purchase.'},
+
+ {t:'shopper',tag:'apply',diff:'easy',
+  q:'A household shopper does a monthly grocery run from a list. Which FMCG lever matters most for her?',
+  opts:['Availability, preferred pack sizes and value packs',
+        'Checkout placement and eye-catching packaging',
+        'Price-offs and buy-one-get-one multi-packs on her usual brands',
+        'Cold cabinets and quick-commerce availability'],
+  why:'<b>The planned shopper “knows what to buy before entering the store”</b> — so the brand’s job is to be there, in the pack size she wants.<div class="work">Planned shopper\n  Example → monthly groceries\n  Lever   → ensure availability, preferred pack sizes, value packs</div>Checkout placement targets the impulse shopper; BOGO targets the deal-seeker. A planned shopper who finds a stock-out simply buys the competitor that is on the list’s shelf.<br><br>For a planned mission, availability beats persuasion.'},
+
+ {t:'shopper',tag:'apply',diff:'medium',
+  q:'Which shopper type does MT1 illustrate with buying a ready-to-drink coffee during a commute?',
+  opts:['Convenience-seeking shopper',
+        'Impulse shopper',
+        'Brand-loyal (Nescafé) shopper',
+        'Deal-seeking shopper'],
+  why:'<b>Convenience-seeking: “prioritises speed, accessibility and ease of purchase.”</b> The RTD coffee on a commute is the deck’s example, and the levers are cold cabinets, quick-commerce availability and on-the-go packs.<div class="work">Convenience-seeking\n  Example → RTD coffee during a commute\n  Lever   → cold cabinets, quick commerce, on-the-go packs</div>It can look like impulse, but the coffee was a <i>need</i> met quickly, not an unplanned grab triggered by a display.<br><br>Impulse is triggered by the display; convenience is triggered by the shopper’s time pressure.'},
+
+ {t:'shopper',tag:'apply',diff:'medium',trap:true,
+  q:'A shopper always buys Nescafé Classic. What is the biggest commercial risk for Nestlé with this shopper?',
+  opts:['A stock-out, which forces even a loyal shopper to switch',
+        'Too few price-offs, since loyal shoppers chase discounts',
+        'Weak checkout placement, which loses the impulse sale',
+        'A missing multi-pack, which this shopper buys every time'],
+  why:'<b>Brand-loyal shopper → “maintain availability, quality and consistent brand experience”.</b> Loyalty is not bought with discounts; it is kept by never giving the shopper a reason to try the alternative.<div class="work">Brand-loyal\n  Example → consistently buying Nescafé Classic\n  Lever   → availability · quality · consistent experience</div>The trap is assuming every shopper responds to price-offs. Discounting a loyal shopper’s brand mostly gives margin away to someone who would have bought anyway.<br><br>The loyal shopper’s enemy is the empty shelf, not the competitor’s offer.'},
+
+ {t:'shopper',tag:'concept',diff:'medium',
+  q:'In MT2’s seven-step shopper journey, which stage comes straight after <b>“Navigates the store”</b>?',
+  opts:['Category exploration',
+        'Decision making',
+        'Entry & first impressions',
+        'Purchase & checkout'],
+  why:'<b>The journey runs: Entry → Navigate → Category exploration → Decision → Purchase → Post-purchase → Repeat.</b><div class="work">1 Entry & first impressions\n2 Navigates the store\n3 Category exploration   ← compares brands, packs, prices\n4 Decision making\n5 Purchase & checkout\n6 Post-purchase behaviour\n7 Repeat visit</div>Decision making is one step later: first the shopper scans the category, <i>then</i> chooses.<br><br>A useful mnemonic: E-N-C-D-P-P-R — “Every New Customer Decides, Pays, Posts, Returns.”'},
+
+ {t:'shopper',tag:'apply',diff:'hard',trap:true,
+  q:'At which journey stage does MT2 say eye-level placement and end caps act as <b>influencer cues</b>?',
+  opts:['Decision making',
+        'Category exploration',
+        'Entry & first impressions',
+        'Purchase & checkout'],
+  why:'<b>Stage 4, Decision making:</b> “Chooses based on brand trust, price, quality, pack size, offers and influencer cues (e.g. eye-level, end caps).”<div class="work">3 Category exploration → compares brands, checks pack sizes, prices, offers\n4 Decision making      → trust, price, quality, pack, offers,\n                         influencer cues: eye-level, end caps</div>Category exploration is the tempting answer because the shopper is in front of the shelf — but the deck places the cues at the moment of choice. Checkout is where <i>impulse</i> add-ons happen.<br><br>Exploration is comparing; decision is choosing — the cues tip the choice.'},
+
+ {t:'shopper',tag:'apply',diff:'medium',
+  q:'A shopper picks up three shampoo brands, checks the variants and compares price points before choosing. Which MT2 shopper behaviour is this?',
+  opts:['Explores & compares',
+        'Value seeking',
+        'Brand & quality conscious',
+        'Convenience driven'],
+  why:'<b>Explores & compares: “checks multiple brands, variants and price points.”</b><div class="work">Value seeking          → best price, offers, pack sizes\nConvenience driven     → easy-to-find, well-stocked products\nBrand & quality        → trusted brands, familiar packs\nExplores & compares    → multiple brands, variants, price points\nImpulse buying         → displays, end caps, combos, promotions\nHealth & lifestyle     → healthier, natural, functional</div>Value seeking also involves price, but it is about finding the <i>best</i> price or offer, not about comparing across brands and variants.<br><br>Read for the verb: “compares” across options vs “looks for” the best deal.'},
+
+ {t:'shopper',tag:'concept',diff:'easy',core:0,
+  q:'Which shopper behaviour does MT2 tie to <b>displays, end caps, combos and promotions</b>?',
+  opts:['Impulse buying',
+        'Value seeking',
+        'Explores & compares',
+        'Health & lifestyle focus'],
+  why:'<b>Impulse buying is “influenced by displays, end caps, combos and promotions”.</b> It lines up with MT1’s impulse shopper, whose levers are secondary displays and checkout placement.<div class="work">MT1 impulse shopper → secondary displays, checkout, packaging\nMT2 impulse buying  → displays, end caps, combos, promotions</div>Value seeking responds to offers too, but it is a deliberate hunt for the best price. Impulse is unplanned.<br><br>MT1’s shopper types and MT2’s behaviours overlap. Use whichever list the question names.'},
+
+ {t:'shopper',tag:'concept',diff:'easy',core:0,
+  q:'At which journey stage does the shopper “notice store layout, entrance displays, brand signage and promotions”?',
+  opts:['Entry & first impressions',
+        'Navigates the store',
+        'Category exploration',
+        'Decision making at the shelf'],
+  why:'<b>Stage 1, Entry & first impressions</b>, covers the store layout, entrance displays, signage and promotions — the “New Launch” stand at the door in the deck’s photo.<div class="work">1 Entry          → layout, entrance displays, signage, promotions\n2 Navigate       → follows layout, looks for sections, moves to key aisles</div>Navigating is the next step: following the layout towards the aisles. Repeat visit is about remembering preferred brands and offers.<br><br>Entrance displays are bought for stage 1 — they work before the shopper has a mission in mind.'},
+
+/* ---------------- Store Layouts ---------------- */
+ {t:'layout',tag:'apply',diff:'easy',
+  q:'A grocery retailer with a very high SKU count wants maximum product density and quick everyday shopping. Which layout fits?',
+  opts:['Grid layout',
+        'Free-flow layout',
+        'Loop / racetrack layout',
+        'Spine layout'],
+  why:'<b>Grid: parallel aisles, straight pathways — “efficient, organised, high capacity”.</b> It maximises space and product density and suits everyday missions.<div class="work">Grid best suited for\n  grocery · pharmacies · convenience · high-SKU formats</div>Free-flow and loop give up density for experience — fine for fashion, wasteful for 5,000 grocery SKUs. Spine suits multi-department stores rather than dense grocery.<br><br>High SKUs + everyday mission = grid, every time.'},
+
+ {t:'layout',tag:'concept',diff:'medium',trap:true,
+  q:'A retailer wants shoppers <b>guided along one defined path</b> past every category, not wandering. Which layout is it?',
+  opts:['Loop / racetrack layout',
+        'Free-flow layout',
+        'Spine layout with one main aisle',
+        'Hybrid layout'],
+  why:'<b>Loop / racetrack “creates a defined path that guides shoppers around the store, exposing them to multiple product categories”.</b><div class="work">Loop      → defined path, guided exposure, discovery\nFree-flow → flexible fixtures, no rigid aisles, open wandering</div>Free-flow is the trap: both are “experiential” and both suit fashion, but free-flow deliberately has <i>no</i> set path. The defined path is the loop’s whole point.<br><br>Loop = guided. Free-flow = unguided. That is the line examiners test.'},
+
+ {t:'layout',tag:'apply',diff:'medium',
+  q:'A premium boutique wants an open, organic floor with fixtures placed creatively and no rigid aisles. Which layout?',
+  opts:['Free-flow layout',
+        'Loop / racetrack layout',
+        'Spine layout',
+        'Grid layout'],
+  why:'<b>Free-flow: “flexible fixture placement instead of rigid aisles … open and organic.”</b> Taglines: flexible, experiential, open.<div class="work">Free-flow best suited for\n  fashion & apparel · lifestyle & home décor\n  premium & luxury · boutique & specialty</div>Loop also suits premium stores, but it puts a defined track in the floor — the opposite of “organic”.<br><br>“No rigid aisles” and “creative presentation” both point to free-flow.'},
+
+ {t:'layout',tag:'apply',diff:'medium',
+  q:'A large electronics and home-appliances store (think Croma) wants a clear main aisle with departments branching off both sides. Which layout?',
+  opts:['Spine layout',
+        'Grid layout',
+        'Loop / racetrack layout',
+        'Free-flow layout'],
+  why:'<b>Spine: “a central main aisle (spine) with product categories and departments branching off on either side.”</b> Clear path, strong structure.<div class="work">Spine best suited for\n  large-format stores · department stores\n  multi-category retailers · home improvement & electronics</div>A grid also has aisles, but they are many parallel ones of equal weight — there is no single spine.<br><br>One dominant aisle with departments off it = spine.'},
+
+ {t:'layout',tag:'apply',diff:'medium',
+  q:'A hypermarket runs grocery aisles, a fashion zone and an electronics corner under one roof. Which layout does MT2 recommend?',
+  opts:['Hybrid layout',
+        'Grid layout',
+        'Spine layout',
+        'Free-flow layout'],
+  why:'<b>Hybrid “combines two or more layout types — a grid for core categories and free-flow or loop elements for featured areas.”</b><div class="work">MT2 hybrid floor\n  Everyday essentials → grid\n  Fashion             → free-flow\n  Electronics         → loop element\nBest suited for: superstores & hypermarkets, multiple shopping missions</div>Grid alone would serve the grocery and waste the fashion zone. Spine suits departments, but the deck’s hypermarket example is explicitly hybrid.<br><br>Several shopping missions in one store = hybrid.'},
+
+ {t:'layout',tag:'concept',diff:'medium',
+  q:'What does a grid layout give up compared with a loop layout?',
+  opts:['Browsing and discovery, since it is built for efficient missions',
+        'Product density, since its aisles are spaced far apart from each other',
+        'Ease of finding products, since its paths are curved',
+        'Space efficiency, since it works only in small stores'],
+  why:'<b>Grid optimises efficiency; loop optimises discovery.</b> The grid lets a shopper go straight to the aisle they need — great for a list, poor for exposing them to categories they did not plan to visit.<div class="work">Grid → efficient · organised · high capacity\nLoop → encourages discovery · engaging · experiential</div>The other options invert the grid’s strengths: it has the <i>highest</i> density, the <i>easiest</i> navigation and the <i>best</i> space use.<br><br>Every layout trades efficiency against experience — say which side it sits on.'},
+
+ {t:'layout',tag:'concept',diff:'easy',core:0,
+  q:'Which store type is <b>not</b> listed as “best suited” for a grid layout?',
+  opts:['Fashion and apparel stores',
+        'Grocery stores',
+        'Pharmacies and chemist chains',
+        'Convenience stores'],
+  why:'<b>Grid suits grocery, pharmacies, convenience stores and high-SKU formats.</b> Fashion belongs to loop and free-flow.<div class="work">Grid      → grocery · pharmacy · convenience · high-SKU\nLoop      → fashion · department · lifestyle · premium\nFree-flow → fashion · lifestyle/home décor · luxury · boutique</div>Note that pharmacies are a grid format — that links to MT4, where pharmacy chains carry high-SKU OTC and FMCG ranges.<br><br>Fashion never sits in a pure grid in this deck.'},
+
+/* ---------------- Supply Chain ---------------- */
+ {t:'supply',tag:'concept',diff:'easy',
+  q:'In the MT supply chain, which step sits between <b>MT central buying</b> and the <b>MT store</b>?',
+  opts:['MT DC / warehouse — receives, stores, sorts and distributes',
+        'Distributor — stores stock and services retailers across a town',
+        'Retailer / kirana — stocks and sells to end consumers',
+        'Manufacturer depot — dispatches direct to each store'],
+  why:'<b>MT chain: Manufacturer → MT central buying → MT DC/warehouse → MT store → shopper.</b><div class="work">MT : Manufacturer → Central Buying → DC/Warehouse → Store → Shopper\nGT : Manufacturer → Distributor → Retailer/Kirana → Shopper</div>The distributor is the GT intermediary. MT replaces it with its own DC, which is why “centralised buying, DC-based distribution” is the MT tagline.<br><br>MT has a buying step GT does not; GT has a distributor MT does not.'},
+
+ {t:'supply',tag:'concept',diff:'easy',
+  q:'Which tagline does MT2 give the <b>General Trade</b> supply chain?',
+  opts:['Distributor-led, decentralised and retailer-focused',
+        'Centralised buying, DC-based, system-driven replenishment',
+        'Platform-led, dark-store based and algorithm-driven',
+        'Manufacturer-led, direct-to-store and forecast-driven'],
+  why:'<b>GT: “distributor-led, decentralised and retailer-focused.”</b> <b>MT: “centralised buying, DC-based distribution and system-driven replenishment.”</b><div class="work">MT → centralised · DC-based · system-driven\nGT → distributor-led · decentralised · retailer-focused</div>The second option is the MT tagline — the most likely wrong pick. The third describes quick commerce, which MT2’s chart does not cover.<br><br>The two taglines are mirror images: learn one and invert it.'},
+
+ {t:'supply',tag:'apply',diff:'medium',trap:true,
+  q:'How is replenishment ordered for a DMart store?',
+  opts:['System / central replenishment, driven by inventory and sales',
+        'The store manager phones the FMCG company’s salesman every week',
+        'The distributor’s salesman visits and writes the order',
+        'The shopper’s app orders trigger a dark-store top-up'],
+  why:'<b>MT ordering is “system / central replenishment”; the store “receives replenishment based on inventory/sales”.</b><div class="work">Ordering\n  MT → system / central replenishment\n  GT → salesman / distributor driven\nStore replenishment\n  MT → DC / system replenishes store\n  GT → distributor services outlet</div>The salesman-writes-the-order picture is GT. It is the trap because FMCG companies do still put people into MT stores — but they are promoters and merchandisers, not order-takers.<br><br>In MT the system orders; in GT a person does.'},
+
+ {t:'supply',tag:'apply',diff:'medium',
+  q:'Why can a brand measure promotion uplift far more precisely in MT than in GT?',
+  opts:['MT has POS / sales data; GT data is often limited',
+        'MT promotions run longer, so their effects are bigger',
+        'GT promotions are illegal without a distributor',
+        'MT shoppers are more responsive to every offer'],
+  why:'<b>Data: MT → “POS / sales data available”; GT → “often limited”.</b> Store/SKU-level scan data lets the brand compare sales during and outside a promotion.<div class="work">Data\n  MT → POS / sales data available\n  GT → often limited</div>MT3 repeats the point: national chains use “store/SKU-level sales, inventory, off-take and promotion data”. Measurability is the feature, not shopper responsiveness.<br><br>“System-led” in MT1’s one-liner is largely this: decisions run on data.'},
+
+ {t:'supply',tag:'concept',diff:'medium',
+  q:'Per MT2’s “Key differences” table, how is assortment set in Modern Trade?',
+  opts:['Centrally planned, store-cluster based',
+        'Retailer-specific, decided outlet by outlet',
+        'Distributor-led, beat by beat',
+        'Platform-set, by search demand'],
+  why:'<b>MT assortment is “centrally planned, store-cluster based”</b> — the head office plans ranges for clusters of similar stores rather than one national list.<div class="work">Assortment\n  MT → centrally planned, store-cluster based\n  GT → retailer-specific</div>“Store cluster” is the nuance worth quoting: central does not mean identical. MT3 says the same about national chains: core assortment is central, with regional variations.<br><br>Central planning with cluster variation — not one size fits all.'},
+
+ {t:'supply',tag:'concept',diff:'easy',core:0,
+  q:'Where are commercial terms negotiated in General Trade?',
+  opts:['At retailer / distributor level',
+        'With a central commercial team',
+        'In an annual national agreement',
+        'Through a Joint Business Plan'],
+  why:'<b>Negotiation: MT → central commercial team; GT → retailer/distributor level.</b><div class="work">Negotiation\n  MT → central commercial team\n  GT → retailer / distributor level</div>The annual national agreement and the JBP are MT3’s national-chain ways of working. GT has no head office to sign one with.<br><br>GT terms are struck locally; MT terms are struck centrally.'},
+
+/* ---------------- Category in MT ---------------- */
+ {t:'category',tag:'concept',diff:'easy',
+  q:'How does MT2 define a <b>category</b>?',
+  opts:['A group of related products that meet a similar need',
+        'All the SKUs of one brand on a single shelf in-store',
+        'The products a retailer buys from a single supplier',
+        'A price band that groups products of similar value'],
+  why:'<b>“A category is a group of related products that meet a similar need”</b> — personal care, home care, beverages, snacks.<div class="work">Category = related products × similar need\nNOT      = one brand / one supplier / one price band</div>Defining by brand or supplier is the manufacturer’s view. MT is category-led precisely because the retailer organises around the shopper’s need, not the supplier.<br><br>In MT, “categories are the navigation points for shoppers”.'},
+
+ {t:'category',tag:'apply',diff:'medium',
+  q:'Dairy and personal care are described as categories that “act as destination points”. Which benefit of category does that illustrate?',
+  opts:['Drives store traffic',
+        'Builds larger baskets',
+        'Increases sales and share',
+        'Meets shopper needs better'],
+  why:'<b>Benefit 1, Drives store traffic:</b> “Key categories act as destination points (e.g. dairy, personal care).” A shopper goes to the store <i>for</i> them.<div class="work">1 Drives store traffic        → destination categories\n2 Builds larger baskets       → cross-category, add-ons, higher bill\n3 Increases sales & share     → visibility, availability\n4 Meets shopper needs better  → navigation, experience\n5 Efficient space & assortment→ right SKUs, shelf, facings\n6 Long-term partnerships      → trust, promos, growth</div>Larger baskets is the next step — once the shopper is in for milk, cross-category buying adds to the bill.<br><br>Destination = traffic. Add-on = basket.'},
+
+ {t:'category',tag:'apply',diff:'medium',
+  q:'A well-planned snacks aisle next to beverages leads shoppers to add chips to their cola. Which benefit is this?',
+  opts:['Builds larger baskets',
+        'Drives store traffic',
+        'Enables efficient space management',
+        'Supports long-term partnerships'],
+  why:'<b>Builds larger baskets: “A well-planned category encourages cross-category buying … drives add-on purchases and higher average bill value.”</b><div class="work">Cola (planned) + chips (add-on) → higher average bill value</div>Traffic is about why the shopper came in; basket is about what else they leave with. Space management is about allocating SKUs, shelf and facings.<br><br>Cross-category = basket.'},
+
+ {t:'category',tag:'calc',diff:'easy',
+  q:'From MT2’s indicative sales-contribution table, which category contributes the most to an MT store’s sales?',
+  opts:['Packaged foods & staples, at 20–30%',
+        'Fresh foods, at 10–20%',
+        'Personal care (ranked 2nd), at 10–15%',
+        'Dairy & chilled foods, at 8–15%'],
+  why:'<b>Packaged foods & staples is rank 1 at 20–30%</b> — even its floor beats every other category’s ceiling apart from fresh foods.<div class="work">1 Packaged foods & staples 20–30%\n2 Personal care            10–15%\n3 Home care                 8–12%\n4 Beverages                 8–12%\n5 Snacks & confectionery    8–12%\n6 Dairy & chilled           8–15%\n7 Fresh foods              10–20%\n8 Frozen & RTE              3–6%\n…\n12 Pet care                 1–3%</div>Fresh foods has the second-highest ceiling (20%), which is why it is the distractor.<br><br>Staples are why MT grocery runs as a grid: the bulk of the bill is planned, list-driven buying.'},
+
+ {t:'category',tag:'calc',diff:'hard',trap:true,
+  q:'Fresh foods is ranked <b>7th</b> at 10–20%; personal care is ranked <b>2nd</b> at 10–15%. What should you take from this?',
+  opts:['The ranks do not follow the ranges — fresh’s midpoint, 15%, beats personal care’s 12.5%',
+        'Personal care always out-sells fresh, which is why it ranks 2nd in the table',
+        'Fresh foods’ range is a misprint and should read 1–2%, in line with its rank',
+        'Ranks are by margin, not by sales, so the ranges and the ranks cannot be compared at all'],
+  why:'<b>The table’s ranks and ranges disagree.</b> Compare midpoints:<div class="work">Personal care (rank 2)  (10 + 15) ÷ 2 = 12.5%\nFresh foods  (rank 7)  (10 + 20) ÷ 2 = 15.0%\nDairy        (rank 6)  ( 8 + 15) ÷ 2 = 11.5%\nHome care    (rank 3)  ( 8 + 12) ÷ 2 = 10.0%</div>On the deck’s own numbers, fresh can be the second-largest category and dairy outranks home care. The ranges also sum to 82–139%, so they are indicative, not a split of 100.<br><br><b>In the exam:</b> quote the ranges, call them “indicative”, and do not build an argument on the rank order below #1. Nothing on the slide says the ranks are by margin — that option invents a reason.'},
+
+ {t:'category',tag:'concept',diff:'medium',
+  q:'Which benefit of category in MT is about allocating the right SKUs, shelf space and facings?',
+  opts:['Enables efficient space & assortment management',
+        'Meets shopper needs better',
+        'Increases sales & share',
+        'Supports long-term partnerships with the retailers'],
+  why:'<b>Benefit 5: “Helps allocate the right SKUs, shelf space and facings; improves productivity of the store and the sales team.”</b><div class="work">5 Efficient space & assortment → SKUs · shelf space · facings · productivity</div>“Increases sales & share” is about visibility and availability for the <i>brand</i>; benefit 5 is about the retailer’s <i>space</i> productivity.<br><br>Facings and shelf space → space management.'},
+
+ {t:'category',tag:'concept',diff:'easy',core:0,
+  q:'Which category has the <b>smallest</b> indicative share of MT sales in MT2’s table?',
+  opts:['Pet care, at 1–3%',
+        'Baby care, at 2–4%',
+        'Frozen & ready-to-eat, at 3–6%',
+        'Health, wellness & nutrition, at 2–5%'],
+  why:'<b>Pet care, rank 12, at 1–3%</b>, is the smallest.<div class="work">8  Frozen & RTE              3–6%\n9  Health, wellness, nutrition 2–5%\n10 Baby care                 2–4%\n11 Household & utility       2–5%\n12 Pet care                  1–3%</div>The bottom five are all single-digit. Their shelf space is earned through margin and growth rather than volume.<br><br>Small categories (baby care, wellness) reappear in MT4 as the FMCG opportunity in pharmacy.'},
+
+/* ---------------- Retailer Construct & Formats ---------------- */
+ {t:'construct',tag:'apply',diff:'medium',
+  q:'A chain with <b>40 stores</b> wants to list your brand. Per MT3’s retailer-construct table, who decides and how do you work with them?',
+  opts:['Central buyer + regional teams; regional negotiation, centralised listing',
+        'Store owner; a direct store-level relationship, store by store',
+        'Owner / small buying team; direct negotiation, store-wise execution',
+        'Central category team; national agreements and a centralised promotions calendar'],
+  why:'<b>10–100 stores = regional chain: central buyer + regional teams; regional negotiations, centralised listing.</b><div class="work">Construct            Stores    Decision maker              FMCG approach\nSingle store         1         Store owner                 Direct store-level relationship\nSmall chain          2–10      Owner / small buying team   Direct negotiation + store-wise execution\nRegional chain       10–100    Central buyer + regional    Regional negotiations, centralised listing\nLarge regional/nat.  100–500   Central category/procurement Central listing + region/store execution\nNational / pan-India 500+      Central buying + cat. mgmt  National agreements, centralised promotions</div>40 stores is past the owner-run stage but well short of national.<br><br>Read the store count, then walk the row: decision maker → approach.'},
+
+ {t:'construct',tag:'concept',diff:'easy',
+  q:'What does MT3 give as the store-area range for a <b>national hypermarket chain</b> such as DMart or Reliance Smart Bazaar?',
+  opts:['30,000–1,00,000+ sq ft',
+        '2,000–15,000 sq ft',
+        '1,000–5,000 sq ft',
+        '50,000–2,00,000+ sq ft'],
+  why:'<b>National hypermarkets: 30,000–1,00,000+ sq ft</b> (DMart, Reliance Smart Bazaar, Spencer’s).<div class="work">Hypermarket chains  30,000–1,00,000+  DMart · Smart Bazaar · Spencer’s\nSupermarket chains   2,000–15,000     Nature’s Basket · More · Star Bazaar\nCash & carry        30,000–1,00,000+  METRO\nLulu (regional)     50,000–2,00,000+\nNilgiris             1,000–5,000</div>2,000–15,000 is the supermarket band; 50,000–2,00,000+ is Lulu specifically.<br><br>Hypermarket and cash & carry share a size band — what separates them is the customer (shopper vs business).'},
+
+ {t:'construct',tag:'apply',diff:'medium',
+  q:'MT3 says national MT chains work with FMCG companies through which relationship model?',
+  opts:['Joint Business Planning (JBP), not transactional selling',
+        'Transactional selling, order by order through the whole year',
+        'Owner-led negotiation with quick, informal decisions',
+        'Distributor-led servicing with local credit terms'],
+  why:'<b>Relationship model: “Joint Business Planning (JBP) rather than transactional selling.”</b> Brand and retailer set joint growth targets, promotion calendars and investment for the year.<div class="work">National chain ways of working\n  Buying      → centralised national/category teams\n  Negotiation → annual / periodic, national or regional\n  Promotions  → annual promotion calendar\n  Review      → regular business reviews: sales, growth, availability, ROI\n  Relationship→ JBP rather than transactional selling</div>Owner-led, quick decisions is how MT3 describes <i>regional</i> chains. Distributor-led servicing is GT.<br><br>Scale makes the relationship a plan, not a series of orders.'},
+
+ {t:'construct',tag:'apply',diff:'hard',trap:true,
+  q:'Lulu Hypermarket runs 50,000–2,00,000+ sq ft stores, yet MT3 lists it under <b>regional</b> MT chains. How do you reconcile this?',
+  opts:['Construct (reach) and format (store size) are separate axes',
+        'It is an error — any hypermarket must be a national chain',
+        'Store size decides the construct, so Lulu is national',
+        'Regional chains are defined by store size under 15,000 sq ft'],
+  why:'<b>Construct and format answer different questions.</b> Construct (single, regional, national) is about <i>reach and who decides</i>. Format (hyper, super, mini, cash & carry) is about <i>store size and offer</i>.<div class="work">Lulu       → format: hypermarket · construct: regional (selected cities)\nNilgiris   → format: supermarket · construct: regional (South India)\nDMart      → format: hypermarket · construct: national</div>The trap is assuming big stores mean a national chain. A regional chain can run hypermarkets; a national chain can run 1,000 mini stores.<br><br>Always classify a retailer on both axes.'},
+
+ {t:'construct',tag:'apply',diff:'medium',
+  q:'How does a <b>regional</b> MT chain differ from a <b>national</b> one in MT3’s comparison?',
+  opts:['More scope for regional assortment and local festival campaigns',
+        'More standardised core assortment and national promotion calendars',
+        'More formal, structured business reviews across every chain',
+        'More large-scale volume and reach than a national chain has'],
+  why:'<b>Regional chains: regional/owner-led buying, regional assortment, local festivals, reviews that vary by chain capability, strong local presence.</b><div class="work">National                      Regional\nNational/category buying      Regional buyers / owner-led\nStandardised core assortment  Greater scope for regional assortment\nNational promo calendars      Regional festivals, local campaigns\nFormal structured reviews     Reviews vary by size/capability\nLarge-scale volume and reach  Strong local presence, shopper insight</div>The other three options are all national-chain traits, reworded.<br><br>Regional wins on local relevance and speed; national wins on scale and structure.'},
+
+ {t:'construct',tag:'apply',diff:'medium',
+  q:'Why does a cash & carry (e.g. METRO) price differently from a hypermarket?',
+  opts:['Net prices must leave room for downstream retailers to earn a margin',
+        'It sells to end shoppers, so it matches the lowest MRP in its catchment area',
+        'It runs on JBPs, so the FMCG company sets the shelf price itself',
+        'It stocks premium imported brands, so it prices at a premium'],
+  why:'<b>Cash & carry sells B2B</b> — to kiranas, food service and other businesses. Its pricing must be “competitive net purchase prices that allow downstream retailers to earn a margin”.<div class="work">Cash & carry\n  Customers   → kiranas, food service, other B2B\n  Assortment  → high-rotation SKUs, bulk packs, case sizes\n  Promotions  → volume discounts, slab schemes, bulk deals\n  Supply      → pallet/carton movement, high fill rates\n  Metrics     → volume/value, gross margin, stock turns,\n                availability, customer penetration</div>The second option describes a consumer retailer. Cash & carry’s customer resells the product, so it needs headroom to MRP.<br><br>In cash & carry the shopper is a business — every row follows from that.'},
+
+ {t:'construct',tag:'apply',diff:'medium',
+  q:'Which set of levers best fits a <b>mini supermarket</b> chain (e.g. Reliance Smart Point)?',
+  opts:['Small packs, impulse lines, checkout displays and chillers',
+        'Bulk packs, case sizes and volume slab schemes for business',
+        'Premium imported brands, testers and beauty advisors on-floor',
+        'Annual national calendars and a JBP with category management'],
+  why:'<b>Mini supermarkets: limited shelf space, frequent small-basket shopping.</b><div class="work">Assortment  → small packs, impulse, daily essentials, beverages, snacks\nVisibility  → checkout displays, counter-top units, shelf strips,\n              eye-level placement, chillers\nSupply      → frequent replenishment in small quantities\nMetrics     → sales per sq ft, SKU productivity, stock-outs,\n              stock turns, repeat purchase</div>Bulk packs are cash & carry; testers and advisors are beauty retail; JBP and national calendars are the national hypermarket.<br><br>Small store, small basket, small pack — and sales per square foot is the metric.'},
+
+ {t:'construct',tag:'concept',diff:'medium',trap:true,
+  q:'Per MT3’s summary table, which type of MT chain can have the <b>widest</b> store network?',
+  opts:['Convenience / mini-supermarket chains, at 10–1,000+ stores',
+        'National / large hypermarket chains, at 100+ stores',
+        'Supermarket chains such as More, at 20–500+ stores in their network',
+        'Cash & carry / wholesale chains, at 20–100+ stores'],
+  why:'<b>Convenience / mini-supermarket chains: 10–1,000+ stores</b> (Reliance Smart Point, Spencer’s Local). Small stores, many of them.<div class="work">National / large hypermarket   100+\nSupermarket chains             20–500\nRegional MT chains             10–100+\nCash & carry / wholesale       20–100+\nConvenience / mini-supermarket 10–1,000+</div>The trap is equating big stores with a big network. Hypermarkets are large but expensive to open; mini formats scale by number.<br><br>Note: MT3’s construct table says a national chain is 500+ stores, while this summary puts national hypermarkets at 100+. Quote the table the question refers to.'},
+
+ {t:'construct',tag:'concept',diff:'easy',core:0,
+  q:'For a <b>single, independent store</b>, how does MT3 say the FMCG company works with it?',
+  opts:['Direct store-level relationship with the store owner',
+        'Central listing with region- and store-level execution',
+        'National agreements and centralised promotions',
+        'Regional negotiation with a centralised listing'],
+  why:'<b>Single store: 1 store, store owner decides, direct store-level relationship.</b><div class="work">1 store     → owner        → direct store-level relationship\n2–10        → owner/team   → direct negotiation + store-wise execution\n10–100      → central buyer + regional → regional negotiation, central listing</div>The other three are the 100–500, 500+ and 10–100 rows respectively.<br><br>The fewer the stores, the closer the decision sits to the shop floor.'},
+
+ {t:'construct',tag:'apply',diff:'medium',core:0,
+  q:'Which ways-of-working trait sets <b>supermarket chains</b> (Nature’s Basket, More, Star Bazaar) apart in MT3?',
+  opts:['Wider assortment spanning mass, premium, niche and emerging brands',
+        'Focus on high-rotation SKUs, bulk packs and case sizes for B2B',
+        'Small packs and impulse lines, limited by very tight shelf space',
+        'Medicines plus OTC, with the prescription/OTC mix tracked in the data'],
+  why:'<b>Supermarket chains: “wider assortment across mass, premium, niche and emerging brands, depending on the chain”.</b> Nature’s Basket is the premium end; More is the mass end.<div class="work">Supermarket chains\n  Commercials → margins, trade terms, listing fees where applicable,\n                promotional funding\n  Promotions  → festival offers, monthly campaigns, combos, loyalty\n  Execution   → central planogram, implemented by store teams</div>The other options describe cash & carry, mini supermarkets and pharmacy.<br><br>A supermarket is where an emerging D2C brand can get its first MT listing.'},
+
+/* ---------------- Pharmacy & Beauty ---------------- */
+ {t:'specialty',tag:'concept',diff:'easy',
+  q:'What does MT4 describe as the assortment of a pharmacy retail chain?',
+  opts:['Medicines + OTC + personal care + wellness + nutrition + selected FMCG',
+        'Prescription medicines only, with no FMCG or personal-care range at all',
+        'Makeup, skincare, haircare and fragrance with premium international labels',
+        'High-rotation bulk packs and case sizes for clinics and hospital buyers'],
+  why:'<b>Pharmacy assortment: medicines + OTC + personal care + wellness + nutrition + selected FMCG.</b> That is exactly why pharmacy is an MT channel for FMCG companies.<div class="work">FMCG opportunity in pharmacy\n  OTC · personal care · oral care · skincare · baby care\n  nutrition · hygiene · wellness</div>“Medicines only” describes an old-style chemist. The makeup list is the beauty retailer’s assortment.<br><br>Pharmacy = health trust + FMCG adjacency.'},
+
+ {t:'specialty',tag:'concept',diff:'medium',
+  q:'What data does MT4 say a pharmacy chain tracks that a grocery chain would not?',
+  opts:['The prescription / OTC mix',
+        'Promotion uplift store by store',
+        'SKU sales and inventory',
+        'Store-level productivity'],
+  why:'<b>Pharmacy data: “SKU sales, inventory, prescription/OTC mix, customer purchase and store productivity.”</b> The Rx/OTC mix is unique to the channel.<div class="work">Pharmacy data → SKU sales · inventory · prescription/OTC mix\n                customer purchase · store productivity</div>The other three are tracked by every organised chain.<br><br>For an FMCG brand, a high OTC share signals a store where self-selected health products sell.'},
+
+ {t:'specialty',tag:'concept',diff:'easy',
+  q:'Which pharmacy chain does MT4 describe as a generic-medicine retail and franchise chain focused on affordable generics?',
+  opts:['DavaIndia',
+        'Apollo Pharmacy',
+        'Frank Ross Pharmacy',
+        'Wellness Forever'],
+  why:'<b>DavaIndia: generic-medicine retail and franchise, affordable generics.</b><div class="work">Apollo Pharmacy  → largest, most widespread; Rx, OTC, vitamins, private label\nMedPlus          → 2nd largest; 5,500+ stores, 800+ cities\nWellness Forever → pharmacy + lifestyle; West and South\nFrank Ross       → century of heritage; East India\nDavaIndia        → generics, franchise\nGuardian         → healthcare, wellness, personal care</div>Frank Ross is the heritage chain; Wellness Forever is the lifestyle one.<br><br>One distinguishing fact per chain is enough for an MCQ.'},
+
+ {t:'specialty',tag:'concept',diff:'medium',
+  q:'Which chain does MT4 call India’s <b>second-largest</b> pharmacy retailer, with 5,500+ stores in 800+ cities?',
+  opts:['MedPlus',
+        'Apollo Pharmacy',
+        'Guardian Pharmacy',
+        'Wellness Forever'],
+  why:'<b>MedPlus Health Services: second-largest, 5,500+ stores, 800+ cities</b> — selling medicines, FMCG and opticals.<div class="work">Largest       → Apollo Pharmacy (Apollo Hospitals Enterprise)\nSecond-largest→ MedPlus (5,500+ stores, 800+ cities)</div>Apollo is the largest. Guardian and Wellness Forever are smaller, regionally concentrated chains.<br><br>Learn Apollo and MedPlus as a pair.'},
+
+ {t:'specialty',tag:'apply',diff:'medium',
+  q:'Which visibility levers belong to a beauty retailer in MT4, as opposed to a grocery chain?',
+  opts:['Brand bays, shop-in-shops, testers and digital screens',
+        'End caps, gondola ends and secondary displays in aisles',
+        'Checkout displays, counter-top units and shelf strips',
+        'Pallet displays and case stacks in a warehouse aisle'],
+  why:'<b>Beauty visibility: brand bays, gondolas, shop-in-shops, testers and digital screens.</b> Beauty is bought on trial, so the visibility is built around trying the product.<div class="work">Beauty visibility → brand bays · gondolas · shop-in-shops · testers · screens\nBeauty experience → trials · beauty advisors · consultations · demos</div>End caps are the hypermarket set; checkout units are the mini-supermarket set; pallets are cash & carry.<br><br>In beauty the tester does the job the end cap does in grocery.'},
+
+ {t:'specialty',tag:'concept',diff:'easy',
+  q:'How does MT4 position <b>Sephora</b> among India’s beauty retailers?',
+  opts:['Premium / prestige beauty',
+        'Multi-brand specialist + omnichannel',
+        'Beauty, personal care and wellness',
+        'Premium beauty + omnichannel'],
+  why:'<b>Sephora = premium / prestige beauty.</b><div class="work">Nykaa         → multi-brand beauty specialist + omnichannel\nSephora       → premium / prestige beauty\nTira          → premium beauty + omnichannel\nHealth & Glow → beauty, personal care and wellness\nNewU          → beauty, personal care and wellness</div>Tira is the near-miss: premium too, but positioned as omnichannel (Reliance’s app + stores).<br><br>Prestige is Sephora’s word.'},
+
+ {t:'specialty',tag:'apply',diff:'medium',
+  q:'Which feature does MT4 single out as the defining <b>assortment strategy</b> for beauty retail?',
+  opts:['Premiumisation — premium, international, indie and emerging brands',
+        'Value packs and price-offs on everyday mass-market personal-care brands',
+        'Bulk packs and case sizes to serve salons and spa businesses',
+        'Prescription-led ranges with OTC skincare as an add-on line'],
+  why:'<b>Beauty retail has a dedicated “premiumization” row: a strong focus on premium, international, indie and emerging brands.</b><div class="work">Beauty: curated portfolio across makeup, skincare, haircare,\n        fragrance, personal care\n        + premiumisation (premium · international · indie · emerging)\n        + brand partnership (joint launches, exclusives, activations)</div>Value packs are the grocery deal-seeker lever, not the beauty strategy.<br><br>Beauty MT is where indie and D2C brands go for premium visibility.'},
+
+ {t:'specialty',tag:'concept',diff:'easy',core:0,
+  q:'In MT4’s pharmacy table, what does pricing place a strong emphasis on alongside competitiveness?',
+  opts:['Value and consumer trust',
+        'Dynamic, algorithmic pricing',
+        'Premium, prestige pricing',
+        'Bulk slab-based pricing'],
+  why:'<b>Pharmacy pricing: “competitive pricing; strong importance of value and consumer trust.”</b> Health purchases carry more risk, so trust in the chain matters as much as price.<div class="work">Pharmacy pricing → competitive · value · consumer trust</div>Dynamic pricing is e-commerce; prestige is beauty; slab pricing is cash & carry.<br><br>Trust is the word that makes pharmacy a channel worth an FMCG brand’s money.'},
+
+/* ---------------- Sales & Category Teams ---------------- */
+ {t:'org',tag:'concept',diff:'medium',
+  q:'Which ordering matches MT4’s Modern Trade & E-com sales hierarchy, top to bottom?',
+  opts:['Sales VP → KAM → RSM MT → ASM MT → Territory In-Charge → Promoter',
+        'Sales VP → RSM MT → KAM → ASM MT → Promoter → Territory In-Charge',
+        'KAM → Sales VP → RSM MT → Territory In-Charge → ASM MT → Promoter',
+        'Sales VP → ASM MT → RSM MT → KAM → Territory In-Charge → Promoter'],
+  why:'<b>Sales VP → Key Account Manager → RSM MT (North/East/West/South) → ASM MT → Territory In-Charge → Promoter.</b><div class="work">Sales VP\n └ Key Account Manager\n    └ RSM MT  North · East · West · South\n       └ ASM MT\n          └ Territory In-Charge\n             └ Promoter (in-store)</div>Region (RSM) sits above area (ASM), which sits above territory. The KAM sits above the regions because MT accounts are negotiated centrally.<br><br>Region → area → territory → store: largest to smallest.'},
+
+ {t:'org',tag:'apply',diff:'medium',trap:true,
+  q:'Why does the Key Account Manager sit <b>above</b> the regional sales managers in the MT hierarchy?',
+  opts:['MT accounts are bought centrally, so the account outranks the region',
+        'KAMs manage more promoters than the RSMs do, so they rank as more senior',
+        'KAMs handle GT distributors, who drive more volume than MT',
+        'RSMs only manage e-commerce platforms, a smaller channel'],
+  why:'<b>MT buying is centralised, so the commercial relationship is with the account, not the region.</b> One DMart negotiation covers every DMart region; the RSMs then execute it regionally.<div class="work">Who decides on the retailer side  → central buyer / category manager\nWho faces them on the FMCG side   → Key Account Manager\nWho executes regionally           → RSM → ASM → TI → Promoter</div>The trap is reading seniority as headcount. GT distributors are not a KAM’s job, and RSMs here are “RSM MT”, not e-commerce.<br><br>Structure follows the buyer: central buyer, central KAM.'},
+
+ {t:'org',tag:'concept',diff:'easy',
+  q:'Who sits at the bottom of the MT sales hierarchy, working inside the store?',
+  opts:['Promoter',
+        'Territory In-Charge',
+        'ASM MT',
+        'Category Executive'],
+  why:'<b>The promoter is the last link</b> — on the FMCG company’s side, working in the store to drive availability, display and conversion.<div class="work">… ASM MT → Territory In-Charge → Promoter</div>The Category Executive is a trap from the other chart: it is the bottom of the <i>retailer’s</i> category team, not the FMCG company’s sales team.<br><br>Keep the two hierarchies apart: sales team = brand side; category team = retailer side.'},
+
+ {t:'org',tag:'concept',diff:'medium',
+  q:'In MT4’s category-team hierarchy, which role sits at the same level as the Category Manager?',
+  opts:['Merchandising Manager',
+        'Category Head',
+        'Category Executive',
+        'Head of Buying & Merchandising'],
+  why:'<b>Head of Buying & Merchandising → Category Head → Category Manager + Merchandising Manager → Category Executive</b>, supported by supply chain, marketing and store operations.<div class="work">Head of Buying & Merchandising\n  └ Category Head\n     ├ Category Manager   ─┐ same level\n     └ Merchandising Mgr  ─┘\n        └ Category Executive\n(Support: Supply chain | Marketing | Store Operations)</div>The category manager buys and plans the range; the merchandising manager runs how it is presented.<br><br>Buy (category) and present (merchandising) sit side by side.'},
+
+ {t:'org',tag:'concept',diff:'medium',
+  q:'What is the correct order of MT4’s five steps for how the category team works with FMCG companies?',
+  opts:['Planning → negotiation → range & shelf → promotion & execution → review',
+        'Negotiation → planning → promotion & execution → range & shelf → review',
+        'Planning → range & shelf → negotiation → review → promotion & execution',
+        'Range & shelf → planning → negotiation → promotion & execution → review'],
+  why:'<b>1 Category planning → 2 Supplier negotiation → 3 Range & shelf planning → 4 Promotion & execution → 5 Performance review.</b><div class="work">1 Category planning   → growth opportunities, shopper needs, target sales/margins\n2 Supplier negotiation→ listing, assortment, trade terms, pricing, promo investment\n3 Range & shelf       → SKUs, shelf space, planograms, store assortments\n4 Promotion & exec.   → campaigns, visibility, availability, store implementation\n5 Performance review  → sales, gross margin, stock turns, availability,\n                        market share, promotion ROI</div>The logic: decide what the category needs, agree terms, then lay out the shelf, then execute, then measure.<br><br>Plan → buy → place → push → prove.'},
+
+ {t:'org',tag:'apply',diff:'medium',trap:true,
+  q:'In which step of the category team’s process are <b>planograms</b> defined?',
+  opts:['Range & shelf planning',
+        'Promotion & execution in-store',
+        'Category planning',
+        'Supplier negotiation'],
+  why:'<b>Range & shelf planning: “select SKUs, define shelf space, planograms and store-specific assortments.”</b><div class="work">3 Range & shelf planning → SKUs · shelf space · planograms · store assortments\n4 Promotion & execution  → campaigns · visibility · availability · store implementation</div>Promotion & execution is the trap — it covers <i>implementing</i> the plan in-store, but the planogram is designed in step 3.<br><br>Design in step 3; deliver in step 4.'},
+
+ {t:'org',tag:'concept',diff:'easy',core:0,
+  q:'Which metric set does the category team use in the <b>performance review</b> step?',
+  opts:['Sales, gross margin, stock turns, availability, share, promo ROI',
+        'Reach, frequency, GRPs and share of voice for each brand campaign run',
+        'Footfall, dwell time and conversion at the store entrance',
+        'Distributor fill rate, beat coverage and outlet count'],
+  why:'<b>Performance review: “Track sales, gross margin, stock turns, availability, market share and promotion ROI.”</b><div class="work">5 Performance review → sales · gross margin · stock turns\n                       availability · market share · promotion ROI</div>Reach and GRPs are media metrics; beat coverage and outlet count are GT distribution metrics.<br><br>The retailer measures the category the way a P&L owner would — margin and turns, not just sales.'}
+];
+
+/* =========================================================================
+   LESSONS — prep material, one per section
+   ========================================================================= */
+const LESSONS={
+ ot:{eyebrow:'Section 01 · MT1', title:'OT vs GT vs E-commerce', sub:'three channels, compared on the same rows',
+  steps:[
+   {type:'text', title:'The one line that explains everything',
+    body:'MT1 reduces the whole topic to: <b>GT is relationship-led and outlet-led. OT is system-led and category-led.</b> Every row in the comparison tables is a consequence. A kirana is won one outlet and one relationship at a time; DMart is won through central buying, DC replenishment and POS data, and managed category by category. “OT” (organised trade) and “MT” (modern trade) mean the same thing in these decks.'},
+   {type:'table', title:'Structure — who they are', head:['Aspect','Organised Trade','General Trade','E-commerce'],
+    rows:[['Basic construct','Modern, organised retail network','Traditional independent outlets','Digital marketplace / online storefront'],
+          ['Examples','Reliance Retail, DMart, Spencer’s, More, Star Bazaar','Kiranas, provision stores, chemists, small supermarkets','Amazon, Flipkart, BigBasket, Blinkit, Zepto'],
+          ['Ownership','Usually corporate / organised chain','Individual retailer','Platform + sellers / brands'],
+          ['Store structure','Standardised formats and layouts','Highly variable','No physical shelf; digital catalogue'],
+          ['Buying','Centralised / regional procurement; category teams','Distributor → retailer; often retailer-driven','Centralised platform buying; seller model or direct brand']]},
+   {type:'table', title:'Commercials — how you win', head:['Aspect','Organised Trade','General Trade','E-commerce'],
+    rows:[['Decision maker','Category manager / buyer / commercial team','Individual retailer','Platform category manager + algorithm/customer'],
+          ['Assortment','Planned and centrally controlled','Retailer-specific','Very broad virtual assortment'],
+          ['Pricing','More centrally controlled','Retailer-dependent within market norms','Highly dynamic and promotion-driven'],
+          ['Promotion','Listing fees, trade promos, displays, visibility, category promos','Retailer schemes, discounts, displays, salesman influence','Search ranking, sponsored listings, coupons, platform promos'],
+          ['Shelf visibility','Critical; negotiated shelf/display space','Depends heavily on retailer relationship','Digital visibility / search ranking'],
+          ['Inventory','Store + distribution centre / warehouse','Retailer’s backroom + distributor','Warehouse / dark store / FC']]},
+   {type:'text', title:'How to use the tables in an answer',
+    body:'When a question names a lever — a listing fee, a salesman scheme, a sponsored listing — it is telling you the channel. When it names a channel, walk the rows: <b>decision maker → assortment → pricing → promotion → visibility → inventory</b>. Six rows, three columns; most OT/GT questions are one cell of that grid.'},
+   {type:'watch', title:'Traps in this section',
+    body:'<b>1.</b> The one-liner swapped (GT system-led) reads naturally if you skim. <b>2.</b> “Store cluster” assortment is MT, not GT. <b>3.</b> A small supermarket can be GT — ownership, not size, decides. <b>4.</b> The slide’s “marker norms” is a typo for <i>market</i> norms.'}],
+  check:[
+   {t:'ot',tag:'concept',diff:'easy',
+    q:'Search ranking and sponsored listings are the promotion levers of which channel?',
+    opts:['E-commerce','Organised Trade','General Trade','Cash & carry'],
+    why:'E-com promotion = search ranking, sponsored listings, coupons, platform promotions. OT pays listing fees and buys displays; GT runs retailer schemes.'},
+   {t:'ot',tag:'concept',diff:'easy',
+    q:'In GT, inventory is held in…',
+    opts:['The retailer’s backroom plus the distributor','The store plus the chain’s DC','A dark store or fulfilment centre','The FMCG company’s regional depot and C&F agent only'],
+    why:'GT inventory = retailer’s backroom + distributor. Store + DC is OT; dark store / FC is e-commerce.'}]},
+
+ shopper:{eyebrow:'Section 02 · MT1–MT2', title:'The MT Shopper', sub:'who walks in, how they behave, and the path they take',
+  steps:[
+   {type:'table', title:'MT1 — five shopper types and the FMCG lever for each', head:['Shopper','Behaviour','Deck example','FMCG implication'],
+    rows:[['Planned','Knows what to buy before entering','Monthly groceries','Availability, preferred pack sizes, value packs'],
+          ['Deal-seeking','Actively looks for discounts and value','Detergent on BOGO','Promotions, price-offs, multi-packs'],
+          ['Impulse','Unplanned; triggered by visibility, appetite, curiosity','Chocolate at checkout','Secondary displays, checkout placement, attractive packaging'],
+          ['Convenience-seeking','Prioritises speed and ease','RTD coffee on a commute','Cold cabinets, quick commerce, on-the-go packs'],
+          ['Brand-loyal','Prefers a familiar brand; less willing to switch','Nescafé Classic','Availability, quality, consistent brand experience']]},
+   {type:'text', title:'MT2 — six key shopper behaviours',
+    body:'<b>Value seeking</b> (best price, offers, pack sizes) · <b>Convenience driven</b> (easy-to-find, well-stocked) · <b>Brand & quality conscious</b> (trusted brands, familiar packs) · <b>Explores & compares</b> (multiple brands, variants, price points) · <b>Impulse buying</b> (displays, end caps, combos, promotions) · <b>Health & lifestyle focus</b> (healthier, natural, functional). These overlap with MT1’s types: use whichever list the question names.'},
+   {type:'table', title:'MT2 — the seven-step shopper journey', head:['#','Stage','What happens'],
+    rows:[['1','Entry & first impressions','Notices layout, entrance displays, signage, promotions'],
+          ['2','Navigates the store','Follows the layout, looks for sections, moves to key aisles'],
+          ['3','Category exploration','Compares brands, checks pack sizes, prices and offers'],
+          ['4','Decision making','Chooses on trust, price, quality, pack, offers and influencer cues (eye-level, end caps)'],
+          ['5','Purchase & checkout','Adds to cart, picks up impulse items, pays'],
+          ['6','Post-purchase behaviour','Uses the product, may try variants, shares feedback'],
+          ['7','Repeat visit','Returns for planned and unplanned needs; remembers brands and offers']]},
+   {type:'watch', title:'Traps in this section',
+    body:'<b>Exploring ≠ deciding.</b> Eye-level and end caps are cues at stage 4, not 3. <b>Convenience ≠ impulse:</b> the RTD coffee meets a need quickly; the chocolate is unplanned. <b>Loyal shoppers are lost to stock-outs, not to competitors’ discounts.</b>'}],
+  check:[
+   {t:'shopper',tag:'apply',diff:'easy',
+    q:'Buying detergent because of a buy-one-get-one offer is MT1’s example of which shopper?',
+    opts:['Deal-seeking','Impulse-driven','Planned','Brand-loyal'],
+    why:'Deal-seeking shoppers actively look for discounts; the lever is promotions, price-offs and multi-packs.'},
+   {t:'shopper',tag:'concept',diff:'medium',
+    q:'Which journey stage is “compares brands, checks pack sizes, prices and offers”?',
+    opts:['Category exploration','Decision making','Navigates the store','Post-purchase behaviour'],
+    why:'Stage 3, category exploration. Decision making (stage 4) is where the choice is made, nudged by eye-level and end-cap cues.'}]},
+
+ layout:{eyebrow:'Section 03 · MT2', title:'Store Layouts', sub:'five floor plans and the formats each one serves',
+  steps:[
+   {type:'table', title:'The five layouts', head:['Layout','Tagline','How it works','Best suited for'],
+    rows:[['Grid','Efficient. Organised. High capacity.','Parallel aisles, straight paths; maximises space and density','Grocery, pharmacies, convenience, high-SKU formats'],
+          ['Loop / racetrack','Encourages discovery. Engaging. Experiential.','A defined path guides shoppers past many categories','Fashion, department, lifestyle, premium & specialty'],
+          ['Free-flow','Flexible. Experiential. Open.','Flexible fixtures, no rigid aisles; organic exploration','Fashion, lifestyle & home décor, luxury, boutique'],
+          ['Spine','Clear path. Strong structure.','A central main aisle with departments either side','Large-format, department, multi-category, electronics & home improvement'],
+          ['Hybrid','Flexible. Balanced. Purpose-driven.','Grid for core categories + free-flow/loop for featured areas','Multi-category retailers, hypermarkets, multiple shopping missions']]},
+   {type:'text', title:'The trade-off underneath',
+    body:'Every layout sits somewhere between <b>efficiency</b> (grid) and <b>experience</b> (free-flow). Grocery missions are list-driven, so efficiency wins. Fashion is browse-driven, so experience wins. A hypermarket like Reliance Smart Bazaar has both missions under one roof, so it goes <b>hybrid</b>: grid for everyday essentials, free-flow for fashion, a loop for electronics — exactly MT2’s hybrid floor plan.'},
+   {type:'calc', calc:'layout', title:'Live: pick the layout for a store'},
+   {type:'watch', title:'Traps in this section',
+    body:'<b>Loop vs free-flow:</b> both are experiential and both suit fashion, but the loop has a <i>defined path</i> and free-flow deliberately does not. <b>Grid vs spine:</b> a grid has many equal aisles; a spine has one dominant aisle with departments branching off.'}],
+  check:[
+   {t:'layout',tag:'apply',diff:'easy',
+    q:'A pharmacy chain is redesigning its stores. Which layout does MT2 list for pharmacies?',
+    opts:['Grid','Free-flow','Loop / racetrack','Spine'],
+    why:'Grid suits grocery, pharmacies, convenience and high-SKU formats: efficient, high-density, easy to navigate.'},
+   {t:'layout',tag:'concept',diff:'medium',
+    q:'Which layout uses one central main aisle with departments branching off both sides?',
+    opts:['Spine','Grid','Loop / racetrack','Hybrid'],
+    why:'Spine: clear path, strong structure. Suited to large-format, department and electronics stores.'}]},
+
+ supply:{eyebrow:'Section 04 · MT2', title:'Supply Chain — MT vs GT', sub:'who holds the stock and who places the order',
+  steps:[
+   {type:'formula', pill:'MT: Manufacturer → Central Buying → DC / Warehouse → Store → Shopper',
+    legend:[['Central buying','Negotiates assortment, price, promotions and commercial terms'],
+            ['DC / warehouse','Receives, stores, sorts and distributes to stores'],
+            ['MT store','Receives replenishment based on inventory / sales']]},
+   {type:'formula', pill:'GT: Manufacturer → Distributor → Retailer / Kirana → Shopper',
+    legend:[['Distributor','Stores and manages stock, services retailers'],
+            ['Retailer / kirana','Stocks and sells to end consumers']]},
+   {type:'table', title:'Key differences at a glance (MT2)', head:['Parameter','Modern Trade','General Trade'],
+    rows:[['Buying','Centralised MT buying team','Distributor + retailer'],
+          ['Distribution','Company → MT DC → store','Company → distributor → retailer'],
+          ['Inventory','Centrally / system managed','Distributor-led'],
+          ['Ordering','System / central replenishment','Salesman / distributor driven'],
+          ['Assortment','Centrally planned, store-cluster based','Retailer-specific'],
+          ['Negotiation','Central commercial team','Retailer / distributor level'],
+          ['Promotions','Centrally negotiated promotions','Local schemes'],
+          ['Data','POS / sales data available','Often limited'],
+          ['Store replenishment','DC / system replenishes store','Distributor services outlet']]},
+   {type:'watch', title:'Traps in this section',
+    body:'MT has a <b>buying</b> step GT lacks; GT has a <b>distributor</b> MT replaces with its own DC. In MT the <b>system</b> orders; in GT a <b>person</b> (salesman) does. FMCG promoters work in MT stores, but they do not write the replenishment order.'}],
+  check:[
+   {t:'supply',tag:'concept',diff:'easy',
+    q:'Who services a kirana outlet with stock in the GT supply chain?',
+    opts:['The distributor','The chain’s DC','The central buying team','A dark store'],
+    why:'GT store replenishment: the distributor services the outlet. In MT the DC / system replenishes the store.'},
+   {t:'supply',tag:'concept',diff:'easy',
+    q:'Which tagline describes the MT supply chain?',
+    opts:['Centralised buying, DC-based, system-driven','Distributor-led, decentralised, retailer-focused','Platform-led, dark-store based','Owner-led, store-by-store'],
+    why:'MT: centralised buying, DC-based distribution and system-driven replenishment. The second option is GT.'}]},
+
+ category:{eyebrow:'Section 05 · MT2', title:'Category in MT', sub:'why the retailer thinks in categories, and which ones sell',
+  steps:[
+   {type:'text', title:'What a category is',
+    body:'<b>“A category is a group of related products that meet a similar need”</b> — personal care, home care, beverages, snacks. In MT, <b>categories are the navigation points for shoppers</b>, helping them discover, compare and buy. That is the “category-led” half of MT1’s one-liner.'},
+   {type:'table', title:'Why category matters in MT — six reasons', head:['#','Benefit','What it means'],
+    rows:[['1','Drives store traffic','Strong categories pull shoppers in; key ones (dairy, personal care) are destinations'],
+          ['2','Builds larger baskets','Cross-category buying, add-on purchases, higher average bill value'],
+          ['3','Increases sales & share','Focused execution improves visibility and availability; brands gain in-store share'],
+          ['4','Meets shopper needs better','Organised assortment and clear navigation; better experience'],
+          ['5','Efficient space & assortment','Right SKUs, shelf space and facings; store and sales-team productivity'],
+          ['6','Long-term partnerships','Category performance builds retailer trust; opens promotions, displays, growth']]},
+   {type:'table', title:'Indicative sales contribution in an MT store', head:['Rank','Category','Share','Midpoint'],
+    rows:[['1','Packaged foods & staples','20–30%','25.0%'],['2','Personal care','10–15%','12.5%'],
+          ['3','Home care','8–12%','10.0%'],['4','Beverages','8–12%','10.0%'],['5','Snacks & confectionery','8–12%','10.0%'],
+          ['6','Dairy & chilled','8–15%','11.5%'],['7','Fresh foods','10–20%','15.0%'],['8','Frozen & RTE','3–6%','4.5%'],
+          ['9','Health, wellness & nutrition','2–5%','3.5%'],['10','Baby care','2–4%','3.0%'],
+          ['11','Household & utility','2–5%','3.5%'],['12','Pet care','1–3%','2.0%']]},
+   {type:'watch', title:'The source problem in this table',
+    body:'The ranks do not follow the ranges: fresh foods (rank 7) has a 15% midpoint, above personal care’s 12.5% at rank 2, and dairy (rank 6) beats home care (rank 3). The ranges also sum to 82–139%. <b>In the exam, quote the ranges as “indicative”, trust rank 1 (staples) and the bottom (pet care), and do not argue from the middle ranks.</b>'}],
+  check:[
+   {t:'category',tag:'concept',diff:'easy',
+    q:'“Drives add-on purchases and higher average bill value” is which benefit of category?',
+    opts:['Builds larger baskets','Drives store traffic','Meets shopper needs better','Increases sales & share'],
+    why:'Larger baskets come from cross-category and add-on buying. Traffic is about destination categories pulling shoppers in.'},
+   {t:'category',tag:'calc',diff:'medium',
+    q:'What is personal care’s midpoint share, from its 10–15% range?',
+    opts:['12.5%','15.0%','25.0%','10.0%'],
+    why:'(10 + 15) ÷ 2 = 12.5%. Fresh foods’ midpoint is 15% — higher, despite ranking 7th.'}]},
+
+ construct:{eyebrow:'Section 06 · MT3', title:'Retailer Construct & Formats', sub:'store count decides who you sell to; format decides what you sell',
+  steps:[
+   {type:'table', title:'Retailer construct — by number of stores', head:['Construct','Stores','Decision making','FMCG approach'],
+    rows:[['Single / independent','1','Store owner','Direct store-level relationship'],
+          ['Small chain','2–10','Owner / small buying team','Direct negotiation + store-wise execution'],
+          ['Regional chain','10–100','Central buyer + regional teams','Regional negotiations, centralised listing'],
+          ['Large regional / national','100–500','Central category / procurement team','Central listing + region/store execution'],
+          ['National / pan-India','500+','Central buying + category management','National agreements, centralised promotions, store execution']]},
+   {type:'calc', calc:'construct', title:'Live: classify a chain by store count'},
+   {type:'table', title:'Formats — size, examples, network (MT3)', head:['Format','Store size (sq ft)','Examples','Network'],
+    rows:[['National hypermarket','30,000–1,00,000+','DMart, Reliance Smart Bazaar, Spencer’s','100+'],
+          ['Supermarket chain','2,000–15,000','Nature’s Basket, More, Star Bazaar','20–500'],
+          ['Regional MT chain','1,000–2,00,000+ (varies)','Vijetha, Ratnadeep, Nilgiris, Lulu, Haiko, Modern Bazaar','10–100+'],
+          ['Cash & carry','30,000–1,00,000+','METRO Wholesale, Udaan*','20–100+'],
+          ['Mini supermarket / convenience','Small','Reliance Smart Point, Spencer’s Local','10–1,000+']]},
+   {type:'table', title:'Ways of working — the rows that differ', head:['Format','Distinctive way of working'],
+    rows:[['National hypermarket','Annual promo calendar; central DC; store/SKU data; Joint Business Planning, not transactional selling'],
+          ['Supermarket chain','Wider assortment across mass, premium, niche, emerging; listing fees where applicable; central planograms'],
+          ['Regional chain','Regional tastes and local brands; regional festivals; data varies; quicker, owner-led decisions'],
+          ['Cash & carry','B2B: kiranas, food service; bulk packs, case sizes; slab schemes; net prices leave a downstream margin'],
+          ['Mini supermarket','Small packs, impulse; checkout & counter-top units, chillers; frequent small replenishment; sales per sq ft']]},
+   {type:'watch', title:'Traps in this section',
+    body:'<b>Construct ≠ format.</b> Lulu is a hypermarket (50,000–2,00,000+ sq ft) but a <i>regional</i> chain. <b>Big stores ≠ big network:</b> mini chains reach 1,000+ stores. <b>Source inconsistency:</b> the construct table says national = 500+ stores; the summary slide puts national hypermarkets at 100+. Quote the table the question uses. Udaan carries an asterisk because it is a B2B e-commerce platform, not a cash & carry store chain.'}],
+  check:[
+   {t:'construct',tag:'apply',diff:'medium',
+    q:'A 6-store chain wants your brand. Per MT3, how do you work with it?',
+    opts:['Direct negotiation with the owner/small team; store-wise execution','National agreement with centralised promotions','Regional negotiation through a central buyer, with centralised listing','JBP with the central category team'],
+    why:'2–10 stores is a small chain: owner or a small buying team decides; direct negotiation plus store-wise execution.'},
+   {t:'construct',tag:'concept',diff:'easy',
+    q:'Who are a cash & carry’s main customers?',
+    opts:['Kiranas, food service and other B2B buyers','End shoppers stocking up on monthly grocery runs','Online shoppers on quick commerce','Premium beauty shoppers'],
+    why:'Cash & carry is B2B. Its demand forecast is built across kiranas, food-service customers and other business segments.'}]},
+
+ specialty:{eyebrow:'Section 07 · MT4', title:'Pharmacy & Beauty', sub:'specialty MT channels where FMCG brands also sell',
+  steps:[
+   {type:'table', title:'Pharmacy vs beauty — ways of working', head:['Area','Pharmacy','Beauty'],
+    rows:[['Buying','Central / category buying for organised chains','Central category / beauty buying teams'],
+          ['Assortment','Medicines + OTC + personal care + wellness + nutrition + selected FMCG','Curated: makeup, skincare, haircare, fragrance, personal care'],
+          ['Pricing / premium','Competitive; value and consumer trust','Premiumisation: premium, international, indie, emerging'],
+          ['Visibility','Shelf placement, counter displays, category bays, digital','Brand bays, gondolas, shop-in-shops, testers, screens'],
+          ['Experience / promos','Consumer offers, loyalty, category and digital promotions','Trials, beauty advisors, launches, sampling, influencers, festivals'],
+          ['Data','SKU sales, inventory, prescription/OTC mix, store productivity','SKU sales, segments, conversion, repeat purchase'],
+          ['Omnichannel','Store + app/web + home delivery','Store + app/web + social/content + rapid delivery']]},
+   {type:'table', title:'Who’s who', head:['Retailer','Positioning'],
+    rows:[['Apollo Pharmacy','Largest, most widespread; Rx, OTC, vitamins, private label'],
+          ['MedPlus','2nd largest; 5,500+ stores, 800+ cities; medicines, FMCG, opticals'],
+          ['Wellness Forever','Pharmacy + lifestyle; West and South'],
+          ['Frank Ross','Century of heritage; East India'],
+          ['DavaIndia','Affordable generics; franchise'],
+          ['Guardian','Healthcare, wellness, personal care'],
+          ['Nykaa','Multi-brand beauty specialist + omnichannel'],
+          ['Sephora','Premium / prestige beauty'],
+          ['Tira','Premium beauty + omnichannel'],
+          ['Health & Glow / NewU','Beauty, personal care and wellness']]},
+   {type:'text', title:'The FMCG opportunity in pharmacy',
+    body:'OTC, personal care (skin, hair, oral), hygiene (handwash, sanitiser, intimate hygiene), baby care (diapers, wipes, toiletries), nutrition (vitamins, supplements, health drinks) and wellness. These are the small categories at the bottom of MT2’s contribution table. In a pharmacy they borrow the channel’s <b>trust</b>.'},
+   {type:'watch', title:'Traps in this section',
+    body:'Sephora = <i>prestige</i>; Tira = premium + <i>omnichannel</i>. Apollo is the largest, MedPlus the second. Pharmacies are a <b>grid</b> layout format (MT2).'}],
+  check:[
+   {t:'specialty',tag:'concept',diff:'easy',
+    q:'Which pharmacy chain has over a century of heritage and mainly serves East India?',
+    opts:['Frank Ross Pharmacy','DavaIndia','MedPlus Health Services','Wellness Forever'],
+    why:'Frank Ross is the heritage East India chain. DavaIndia is generics; MedPlus is the second-largest; Wellness Forever is West and South.'},
+   {t:'specialty',tag:'concept',diff:'easy',
+    q:'Which beauty-retail lever does MT4 list under consumer experience?',
+    opts:['Beauty advisors, consultations and demos','Volume slab schemes','Checkout counter-top units and shelf strips near tills','Pallet displays'],
+    why:'Beauty experience = product trials, beauty advisors, consultations, demonstrations. The others belong to cash & carry and mini supermarkets.'}]},
+
+ org:{eyebrow:'Section 08 · MT4', title:'Sales & Category Teams', sub:'the two org charts that meet across the negotiating table',
+  steps:[
+   {type:'formula', pill:'FMCG side: Sales VP → KAM → RSM MT (N/E/W/S) → ASM MT → Territory In-Charge → Promoter',
+    legend:[['Key Account Manager','Owns the national account relationship with the chain’s buyer'],
+            ['RSM / ASM / TI','Execute regionally, by area, by territory'],
+            ['Promoter','In-store; availability, display, conversion']]},
+   {type:'formula', pill:'Retailer side: Head of Buying & Merchandising → Category Head → Category Mgr + Merchandising Mgr → Category Executive',
+    legend:[['Category Manager','Buys and plans the range'],
+            ['Merchandising Manager','Same level; runs presentation'],
+            ['Support','Supply chain | Marketing | Store Operations']]},
+   {type:'table', title:'How the category team works with FMCG companies', head:['#','Step','What happens'],
+    rows:[['1','Category planning','Growth opportunities, shopper needs, target sales/margins'],
+          ['2','Supplier negotiation','Listing, assortment, trade terms, pricing, promotional investment'],
+          ['3','Range & shelf planning','SKUs, shelf space, planograms, store-specific assortments'],
+          ['4','Promotion & execution','Campaigns, visibility, availability, store implementation'],
+          ['5','Performance review','Sales, gross margin, stock turns, availability, market share, promotion ROI']]},
+   {type:'watch', title:'Traps in this section',
+    body:'Do not mix the charts: <b>Promoter</b> is the bottom of the brand’s sales team; <b>Category Executive</b> is the bottom of the retailer’s category team. <b>Planograms</b> are designed in step 3 and implemented in step 4. Mnemonic: <b>plan → buy → place → push → prove.</b>'}],
+  check:[
+   {t:'org',tag:'concept',diff:'easy',
+    q:'Who sits directly below the Sales VP in the MT sales hierarchy?',
+    opts:['Key Account Manager','RSM MT North','ASM MT','Territory In-Charge'],
+    why:'Sales VP → KAM → the four RSMs. The KAM owns the central account relationship.'},
+   {t:'org',tag:'concept',diff:'medium',
+    q:'Supplier negotiation covers listing, assortment, trade terms, pricing and…',
+    opts:['Promotional investments','Planograms','Stock-turn and margin reviews','Shopper-need research'],
+    why:'Step 2 agrees listing, assortment, trade terms, pricing and promotional investment. Planograms are step 3; stock turns are step 5.'}]}
+};
+
+/* =========================================================================
+   CALCS
+   ========================================================================= */
+const CALCS={
+ construct:{
+  hint:'Change the store count and see which MT3 construct row applies.',
+  ins:[{k:'n',nm:'Number of stores',type:'range',min:1,max:1000,step:1,def:40}],
+  run:v=>{
+    const n=+v.n; let r;
+    if(n<=1) r=['Single / independent store','Store owner','Direct store-level relationship'];
+    else if(n<=10) r=['Small chain (2–10)','Owner / small buying team','Direct negotiation + store-wise execution'];
+    else if(n<=100) r=['Regional chain (10–100)','Central buyer + regional teams','Regional negotiations, centralised listing'];
+    else if(n<=500) r=['Large regional / national chain (100–500)','Central category / procurement team','Central listing + region/store execution'];
+    else r=['National / pan-India chain (500+)','Central buying + category management','National agreements, centralised promotions, store-level execution'];
+    return 'Stores = '+n+'<span class="big">'+r[0]+'</span>'+
+      '<span class="vd ok">Decides: '+r[1]+'</span>'+
+      '<span class="vd">FMCG approach: '+r[2]+'</span>'+
+      '<span class="vd warn">This is the construct only. Classify the format (hyper / super / mini / cash & carry) separately by store size.</span>';}},
+ layout:{
+  hint:'Describe the store and see which MT2 layout fits.',
+  ins:[{k:'m',nm:'Main shopping mission',type:'select',opts:[['list','Everyday, list-driven'],['browse','Browsing / discovery'],['mixed','Several missions in one store']],def:'list'},
+       {k:'s',nm:'Store type',type:'select',opts:[['dense','High-SKU (grocery, pharmacy, convenience)'],['dept','Multi-department large format'],['fashion','Fashion / lifestyle'],['premium','Premium / boutique']],def:'dense'}],
+  run:v=>{
+    let L,why;
+    if(v.m==='mixed'){L='Hybrid';why='Grid for the core categories, free-flow or loop for featured zones (MT2’s hypermarket plan).';}
+    else if(v.s==='dense'){L='Grid';why='Parallel aisles maximise density and make list shopping fast.';}
+    else if(v.s==='dept'){L='Spine';why='One main aisle with departments either side gives clear navigation at scale.';}
+    else if(v.s==='premium'){L='Free-flow';why='Flexible fixtures, no rigid aisles: an open, organic, premium feel.';}
+    else {L=v.m==='list'?'Loop / racetrack':'Loop or free-flow';why='Loop guides shoppers past every category on a defined path; free-flow lets them wander. Choose by whether you want the path controlled.';}
+    const warn=(v.m==='list'&&(v.s==='fashion'||v.s==='premium'))?'<span class="vd warn">List-driven missions rarely suit fashion floors: check the mission.</span>':'';
+    return 'Mission + store type →<span class="big">'+L+'</span><span class="vd ok">'+why+'</span>'+warn;}}
+};
+
+/* =========================================================================
+   CMAP
+   ========================================================================= */
+const CMAP=[
+ {h:'★ The one-liners that carry the mark',
+  note:'If you remember nothing else, remember these.',
+  rows:[
+   ['GT vs OT','<b>GT = relationship-led, outlet-led. OT = system-led, category-led.</b>'],
+   ['MT supply chain','<b>Centralised buying, DC-based distribution, system-driven replenishment</b>'],
+   ['GT supply chain','<b>Distributor-led, decentralised, retailer-focused</b>'],
+   ['Category','<b>Related products meeting a similar need</b>; the shopper’s navigation point'],
+   ['National chain relationship','<b>Joint Business Planning, not transactional selling</b>'],
+   ['Construct vs format','Store count → who decides. Store size → which format. <b>Two separate axes.</b>']]},
+ {h:'OT · GT · E-com',
+  note:'Same rows, three columns.',
+  rows:[
+   ['Decision maker','OT: category mgr / buyer','GT: retailer · E-com: platform + algorithm'],
+   ['Assortment','OT: central, store-cluster','GT: retailer-specific · E-com: very broad'],
+   ['Pricing','OT: central','GT: retailer, market norms · E-com: dynamic'],
+   ['Promotion','OT: listing fees, displays','GT: schemes, salesman · E-com: search, sponsored'],
+   ['Visibility','OT: negotiated space','GT: relationship · E-com: search ranking'],
+   ['Inventory','OT: store + DC','GT: backroom + distributor · E-com: dark store / FC']]},
+ {h:'Shoppers',
+  note:'Match the lever to the trigger.',
+  rows:[
+   ['Planned','Availability, pack sizes, value packs','monthly groceries'],
+   ['Deal-seeking','Promotions, price-offs, multi-packs','detergent BOGO'],
+   ['Impulse','Secondary displays, checkout, packaging','chocolate at checkout'],
+   ['Convenience','Cold cabinets, quick commerce, on-the-go','RTD coffee on a commute'],
+   ['Brand-loyal','Availability, quality, consistency','Nescafé Classic'],
+   ['Journey','Entry → Navigate → Explore → Decide → Pay → Post-purchase → Repeat','cues (eye-level, end caps) at Decide']]},
+ {h:'Layouts',
+  rows:[
+   ['Grid','Parallel aisles; efficient, dense','grocery, pharmacy, convenience'],
+   ['Loop','Defined path; discovery','fashion, department, lifestyle'],
+   ['Free-flow','No rigid aisles; organic','fashion, luxury, boutique'],
+   ['Spine','One main aisle, departments off it','large-format, electronics'],
+   ['Hybrid','Grid core + free-flow/loop zones','hypermarkets, multi-mission']]},
+ {h:'Category',
+  rows:[
+   ['Six benefits','Traffic · Baskets · Sales & share · Shopper needs · Space & assortment · Partnerships'],
+   ['Biggest','Packaged foods & staples, 20–30%','fresh 10–20% (ranked 7th, midpoint 15%)'],
+   ['Smallest','Pet care, 1–3%','ranges are indicative; ranks are inconsistent']]},
+ {h:'Construct & formats',
+  rows:[
+   ['1 / 2–10 / 10–100','Owner / small team / central buyer + regional','direct · store-wise · central listing'],
+   ['100–500 / 500+','Central category team / central buying + cat. mgmt','central listing · national agreements'],
+   ['Hypermarket','30,000–1,00,000+ sq ft','DMart, Smart Bazaar, Spencer’s'],
+   ['Supermarket','2,000–15,000 sq ft','Nature’s Basket, More, Star Bazaar'],
+   ['Regional','Ratnadeep, Vijetha, Nilgiris, Lulu, Haiko, Modern Bazaar','local assortment, festivals, quick decisions'],
+   ['Cash & carry','B2B; bulk packs; slab schemes; downstream margin','METRO, Udaan*'],
+   ['Mini','Small packs, impulse, chillers; sales per sq ft','Smart Point, Spencer’s Local; 10–1,000+ stores']]},
+ {h:'Specialty & teams',
+  rows:[
+   ['Pharmacy','Medicines + OTC + FMCG; trust; Rx/OTC mix','Apollo #1, MedPlus #2 (5,500+), DavaIndia generics'],
+   ['Beauty','Premiumisation; testers, advisors, shop-in-shops','Nykaa, Sephora (prestige), Tira, Health & Glow'],
+   ['Sales side','VP → KAM → RSM → ASM → TI → Promoter'],
+   ['Retailer side','Head B&M → Category Head → Cat Mgr + Merch Mgr → Cat Exec'],
+   ['Category process','Plan → Negotiate → Range & shelf → Promote & execute → Review']]},
+ {h:'Exam day',
+  rows:[
+   ['Name the channel first','Most questions are one cell of the OT / GT / e-com grid'],
+   ['Two axes for any retailer','Construct (store count) and format (store size)'],
+   ['Quote the deck’s names','DMart, Ratnadeep, METRO, Apollo, Nykaa — a name signals revision'],
+   ['When numbers disagree','Say the table is indicative and quote the range, not the rank']]}
+];
+
+/* =========================================================================
+   ENGINE — do not edit per subject. Everything below is driven by the data
+   file(s) concatenated above this block.
+   ========================================================================= */
+/* ---------- what the data file gave us ---------- */
+const D_TOPICS = typeof TOPICS !=='undefined'?TOPICS :[];
+const D_QUIZ   = typeof QUIZ   !=='undefined'?QUIZ   :[];
+const D_CASES  = typeof CASES  !=='undefined'?CASES  :[];
+const D_LESSON = typeof LESSONS!=='undefined'?LESSONS:null;
+const D_PAPER  = typeof PAPER  !=='undefined'?PAPER  :[];
+const D_CMAP   = typeof CMAP   !=='undefined'?CMAP   :[];
+const D_CALCS  = typeof CALCS  !=='undefined'?CALCS  :{};
+const MODES=[];
+if(D_CASES.length)             MODES.push({id:'exam', label:'✍ Exam Paper',    side:'Caselets'});
+if(D_QUIZ.length)              MODES.push({id:'drill',label:'⚙ Practice Quiz', side:'Sections'});
+if(D_LESSON&&D_TOPICS.length)  MODES.push({id:'learn',label:'◈ Prep Material', side:'Prep sections'});
+if(D_PAPER.length)             MODES.push({id:'paper',label:'✎ Written Paper', side:'Written paper'});
+let MODE=MODES.length?MODES[0].id:'drill';
+
+/* ---------- progression: supply LEVELS / BADGES to override ---------- */
+const LV = typeof LEVELS!=='undefined'?LEVELS:[{xp:0,title:'Intern'},{xp:80,title:'Analyst'},{xp:220,title:'Senior Analyst'},
+  {xp:420,title:'Manager'},{xp:700,title:'Director'},{xp:1000,title:'Chief'}];
+function defaultBadges(){
+  const b=[{id:'b_first',em:'🎯',name:'First Blood',desc:'Answer your first question correctly.'},
+   {id:'b_streak5',em:'🔥',name:'On Fire',desc:'Five correct answers in a row.'},
+   {id:'b_streak10',em:'⚡',name:'Unstoppable',desc:'Ten correct answers in a row.'},
+   {id:'b_streak15',em:'☄️',name:'Untouchable',desc:'Fifteen correct answers in a row.'},
+   {id:'b_trap',em:'🃏',name:'Trap Dodger',desc:'Clear every question marked TRICKY.'}];
+  D_TOPICS.forEach(t=>b.push({id:'b_'+t.id,em:'📘',name:t.name,desc:'Clear every '+t.name+' question.'}));
+  if(D_CASES.length)b.push({id:'b_caselet',em:'🧮',name:'Caselet Cleared',desc:'Clear every MCQ in a single caselet.'});
+  if(D_CASES.some(c=>c.qs.some(q=>q.open))||D_PAPER.length)
+    b.push({id:'b_written',em:'✍️',name:'Long Form',desc:'Open every model answer.'});
+  if(D_LESSON)b.push({id:'b_learn',em:'📖',name:'Fully Revised',desc:'Work through every prep lesson.'});
+  b.push({id:'b_quiz75',em:'🎓',name:'Exam Ready',desc:'Score 75% or more on a full attempt.'});
+  b.push({id:'b_perfect',em:'👑',name:'Flawless',desc:'Score 100% on a full attempt.'});
+  return b;
+}
+const BG = typeof BADGES!=='undefined'?BADGES:defaultBadges();
+const TBADGE={}; D_TOPICS.forEach(t=>{TBADGE[t.id]='b_'+t.id;});
+if(typeof BADGES!=='undefined'){const ids=BG.map(b=>b.id);D_TOPICS.forEach(t=>{if(ids.indexOf('b_'+t.id)<0)delete TBADGE[t.id];});}
+
+/* ---------- derived ---------- */
+const CORE=D_QUIZ.filter(q=>q.core!==0);
+const EXAM_MCQ=D_CASES.reduce((a,c)=>a+c.qs.filter(q=>!q.open).length,0);
+const EXAM_OPEN=D_CASES.reduce((a,c)=>a+c.qs.filter(q=>q.open).length,0);
+const CFG = typeof CONFIG!=='undefined'?CONFIG:{};
+const OPENED={}, LEARNED={};
+let quizState=null, examState=null, LESSON=D_TOPICS.length?D_TOPICS[0].id:null;
+let SCOPE=CORE.length&&CORE.length<D_QUIZ.length?'core':'all', FOCUS=null, MISSED=[];
+let ACTIVE=(SCOPE==='core'?CORE:D_QUIZ).slice();
+let TRAPS=ACTIVE.filter(q=>q.trap).length;
+
+/* =========================================================================
+   SHARED RENDERERS
+   ========================================================================= */
+function tableNode(t){
+  const d=el('div','dtab');
+  d.innerHTML=(t.cap?'<div class="cap">'+t.cap+'</div>':'')+
+    '<div class="sc"><table><thead><tr>'+t.head.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+
+    t.rows.map(r=>'<tr>'+r.map((c,i)=>'<td'+(i?' class="num"':'')+'>'+c+'</td>').join('')+'</tr>').join('')+
+    '</tbody></table></div>';
+  return d;
+}
+function caseletNode(C){
+  const d=el('div','caselet');d.id='case-'+C.id;
+  d.innerHTML='<div class="cl">'+C.cl+'</div><h4>'+C.title+'</h4><div class="brief">'+C.brief+'</div>'+
+    (C.facts?'<div class="facts">'+C.facts.map(f=>'<span>'+f+'</span>').join('')+'</div>':'');
+  (C.tables||[]).forEach(t=>d.appendChild(tableNode(t)));
+  return d;
+}
+function sceneNode(s){
+  const d=el('div','casebox');
+  d.innerHTML='<div class="cl">'+s.cl+'</div><h4>'+s.h+'</h4><p>'+s.body+'</p>';
+  return d;
+}
+function mcqNode(Q,card,onScore){
+  const box=el('div','mcq');
+  const tagLb={apply:'⚙ Apply',case:'🏷 Case',calc:'🧮 Calculate',concept:'◈ Concept'};
+  let head='<span class="tag '+Q.tag+'">'+(tagLb[Q.tag]||'◈ Concept')+'</span>';
+  if(Q.diff)head+='<span class="tag '+Q.diff+'">'+Q.diff+'</span>';
+  if(Q.trap)head+='<span class="tag trap">🃏 tricky</span>';
+  box.innerHTML=head+'<div class="q">'+Q.q+'</div>';
+  if(Q.given)box.appendChild(el('div','givens',Q.given.map(g=>'<span>'+g+'</span>').join('')));
+  const opts=el('div','opts');box.appendChild(opts);
+  const letters=['A','B','C','D','E'],order=shuffle(Q.opts.map((o,i)=>({o,i})));let done=false;
+  order.forEach((item,pos)=>{
+    const b=el('button','opt','<span class="lt">'+letters[pos]+'</span>'+item.o);
+    b.onclick=e=>{
+      if(done)return;done=true;box.dataset.done='1';const ok=item.i===0;
+      [...opts.children].forEach((c,j)=>{c.disabled=true;
+        if(order[j].i===0)c.classList.add('correct');else if(j===pos)c.classList.add('wrong');else c.classList.add('dim');});
+      onAnswer(ok,e.clientX,e.clientY,card);onScore&&onScore(ok);
+      const why=el('div','why','<h5>'+(ok?'Why this is right →':'Why the answer is what it is →')+'</h5><p>'+Q.why+'</p>');
+      box.appendChild(why);requestAnimationFrame(()=>why.classList.add('show'));
+    };
+    opts.appendChild(b);});
+  return box;
+}
+/* a written question — used by the exam caselets and by the written paper */
+function openNode(Q,label,idx,onOpen){
+  const card=el('div','openq');
+  card.innerHTML='<div class="oh"><span class="on">'+label+'</span><span class="om">'+(Q.marks||5)+' marks</span></div>'+
+    '<div class="oq">'+Q.q+'</div>'+(Q.hint?'<p class="hint">💡 '+Q.hint+'</p>':'');
+  const ansBox=el('div','ans');
+  ansBox.innerHTML='<h5>Model answer</h5>'+(Q.svg&&typeof dsSvg==='function'?dsSvg(Q.svg):'')+Q.ans+
+    (Q.rubric?'<div class="rub"><h6>Marking scheme — what the examiner wants</h6><ul>'+
+      Q.rubric.map(r=>'<li>'+r+'</li>').join('')+'</ul></div>':'');
+  const btn=el('button','btn btn-grad btn-rev','Show model answer ↓');
+  btn.onclick=()=>{
+    const open=ansBox.classList.toggle('show');
+    btn.textContent=open?'Hide model answer ↑':'Show model answer ↓';
+    if(open&&!OPENED[idx]){OPENED[idx]=1;buildSidebar();onOpen&&onOpen();}
+  };
+  card.appendChild(btn);card.appendChild(ansBox);
+  return card;
+}
+
+/* ---------- keyboard: answer the first unanswered question ---------- */
+document.addEventListener('keydown',e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  if(/^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName||'')))return;
+  if($('#badgeOvl')||$('#cmapOvl'))return;
+  const map={'1':0,'2':1,'3':2,'4':3,'5':4,'a':0,'b':1,'c':2,'d':3,'e':4};
+  const idx=map[(e.key||'').toLowerCase()];
+  if(idx===undefined)return;
+  const box=[...document.querySelectorAll('.mcq')].find(b=>!b.dataset.done);
+  if(!box)return;
+  const btn=box.querySelectorAll('.opt')[idx];
+  if(!btn||btn.disabled)return;
+  e.preventDefault();
+  btn.scrollIntoView({behavior:reduced?'auto':'smooth',block:'center'});
+  btn.click();
+});
+
+/* =========================================================================
+   MODE · EXAM PAPER
+   ========================================================================= */
+function renderExam(){
+  const m=$('#main');m.innerHTML='';
+  examState={answered:0,correct:0,total:EXAM_MCQ,traps:0,per:{},missed:[]};
+  D_CASES.forEach(c=>examState.per[c.id]={c:0,n:c.qs.filter(q=>!q.open).length,a:0});
+  const traps=D_CASES.reduce((a,c)=>a+c.qs.filter(q=>q.trap).length,0);
+  const intro=el('div','card');
+  intro.innerHTML='<div class="eyebrow">'+(CFG.examEyebrow||'Exam-pattern paper')+'</div>'+
+    '<h1 class="tt">'+(CFG.examTitle||(D_CASES.length+' caselets, '+EXAM_MCQ+' questions'))+' ✍</h1>'+
+    '<div class="sub">'+(CFG.examIntro||'Every question sits under a caselet with its own brief and data tables. Read the table before you read the options.')+'</div>'+
+    (EXAM_OPEN?'<div class="sub" style="margin-top:10px">Plus <b>'+EXAM_OPEN+' open-ended written questions</b> with model answers and a marking scheme each.</div>':'')+
+    '<div class="sub" style="margin-top:10px">Watch for <span class="tag trap" style="margin:0">🃏 tricky</span> — those '+traps+' turn on a distinction that is easy to get backwards. '+
+    'Answer with the mouse or press <b>1–4</b> / <b>A–D</b>.</div>'+
+    '<div class="srcrow">'+D_CASES.map(c=>'<span class="src">'+c.cl+'</span>').join('')+'</div>';
+  m.appendChild(intro);
+  let n=0,on=0;
+  D_CASES.forEach(C=>{
+    m.appendChild(caseletNode(C));
+    C.qs.forEach(Q=>{
+      if(Q.open){
+        on++;
+        m.appendChild(openNode(Q,'Written '+on+' / '+EXAM_OPEN,C.id+'-o'+on,
+          ()=>{if(Object.keys(OPENED).length===EXAM_OPEN+D_PAPER.length)unlock('b_written');}));
+      } else {
+        n++;
+        const card=el('div','qcard');
+        card.appendChild(el('div','qnum','<span>Q'+n+' / '+EXAM_MCQ+'</span>'));
+        card.appendChild(mcqNode(Q,card,ok=>{
+          examState.answered++;examState.per[C.id].a++;
+          if(ok){examState.correct++;examState.per[C.id].c++;if(Q.trap)examState.traps++;}
+          else examState.missed.push(Q);
+          const p=examState.per[C.id];
+          if(p.a===p.n&&p.c===p.n)unlock('b_caselet');
+          if(traps&&examState.traps===traps)unlock('b_trap');
+          buildSidebar();updateFoot();}));
+        m.appendChild(card);
+      }
+    });
+  });
+  const rc=el('div','card hidden');rc.id='resultsCard';m.appendChild(rc);
+  buildFoot();buildSidebar();
+}
+
+/* =========================================================================
+   MODE · PRACTICE QUIZ (drill)
+   ========================================================================= */
+function setScope(mode,id){
+  if(mode==='topic'){SCOPE='topic';FOCUS=id; ACTIVE=D_QUIZ.filter(q=>q.t===id);}
+  else if(mode==='missed'&&MISSED.length){SCOPE='missed';FOCUS=null; ACTIVE=MISSED.slice();}
+  else if(mode==='all'){SCOPE='all';FOCUS=null; ACTIVE=D_QUIZ.slice();}
+  else {SCOPE='core';FOCUS=null; ACTIVE=CORE.slice();}
+  TRAPS=ACTIVE.filter(q=>q.trap).length;
+  renderDrill();
+  window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});
+}
+function renderDrill(){
+  const m=$('#main');m.innerHTML='';
+  quizState={answered:0,correct:0,total:ACTIVE.length,traps:0,per:{},missed:[]};
+  D_TOPICS.forEach(t=>quizState.per[t.id]={c:0,n:0,a:0});
+  ACTIVE.forEach(q=>quizState.per[q.t]&&quizState.per[q.t].n++);
+  const scopeName=FOCUS?(D_TOPICS.find(t=>t.id===FOCUS)||{}).name:null;
+  const intro=el('div','card');
+  intro.innerHTML='<div class="eyebrow">'+(FOCUS?'Focused practice · '+scopeName:(CFG.quizEyebrow||'Practice quiz'))+'</div>'+
+    '<h1 class="tt">'+(FOCUS?scopeName+' 🎯':(CFG.quizTitle||'The full paper'))+' 📈</h1>'+
+    '<div class="sub">'+(FOCUS
+      ? 'Just this section — <b>'+ACTIVE.length+' questions</b>. Use the sidebar to switch sections or go back to the full run.'
+      : '<b>'+ACTIVE.length+' questions</b> across '+D_TOPICS.length+' sections. '+(CFG.quizIntro||'Click any section in the sidebar to drill just that block.'))+'</div>'+
+    '<div class="sub" style="margin-top:10px">The <b>Why</b> panel under each answer is the real revision — it carries the working and the trap that was being set. '+
+    'Watch for <span class="tag trap" style="margin:0">🃏 tricky</span> — those '+TRAPS+' turn on a distinction that is easy to get backwards.</div>'+
+    '<div class="sub" style="margin-top:10px">House rules: <b>no option is ever bolded</b>, and <b>the correct answer is never the longest option</b>. Positions reshuffle every attempt. '+
+    'Answer with the mouse or press <b>1–4</b> / <b>A–D</b>.</div>'+
+    '<div class="srcrow">'+D_TOPICS.map(t=>'<span class="src">'+t.name+'</span>').join('')+'</div>';
+  m.appendChild(intro);
+  let n=0;
+  D_TOPICS.forEach((t,ti)=>{
+    const qs=ACTIVE.filter(q=>q.t===t.id);if(!qs.length)return;
+    const h=el('div','qgroup-h');h.id='grp-'+t.id;
+    h.innerHTML='<span class="gi">'+String(ti+1).padStart(2,'0')+'</span><span class="gt">'+t.name+'</span><span class="gc">'+qs.length+' questions</span>';
+    m.appendChild(h);
+    let lastScene=null;
+    qs.forEach(q=>{n++;
+      if(q.scene&&q.scene!==lastScene){m.appendChild(sceneNode(q.scene));lastScene=q.scene;}
+      if(!q.scene)lastScene=null;
+      const card=el('div','qcard');
+      card.appendChild(el('div','qnum','<span>Q'+n+' / '+ACTIVE.length+'</span>'));
+      card.appendChild(mcqNode(q,card,ok=>{
+        quizState.answered++;quizState.per[q.t].a++;
+        if(ok){quizState.correct++;quizState.per[q.t].c++;if(q.trap)quizState.traps++;}
+        else quizState.missed.push(q);
+        const p=quizState.per[q.t];
+        if(p.a===p.n&&p.c===p.n&&TBADGE[q.t])unlock(TBADGE[q.t]);
+        if(TRAPS&&quizState.traps===TRAPS)unlock('b_trap');
+        buildSidebar();updateFoot();}));
+      m.appendChild(card);});
+  });
+  const rc=el('div','card hidden');rc.id='resultsCard';m.appendChild(rc);
+  buildFoot();buildSidebar();
+}
+
+/* =========================================================================
+   MODE · PREP MATERIAL (lessons + live calculators)
+   ========================================================================= */
+function calcNode(kind,title){
+  const C=D_CALCS[kind]; if(!C)return el('div');
+  const box=el('div','calc');
+  box.innerHTML='<h4>⚡ '+title+'</h4><p class="hint">'+C.hint+'</p>';
+  const inWrap=el('div','cin'), out=el('div','cout');
+  const state={}; C.ins.forEach(i=>state[i.k]=i.def);
+  const redraw=()=>{out.innerHTML=C.run(state);};
+  C.ins.forEach(i=>{
+    const lab=el('label');
+    lab.innerHTML='<span class="nm">'+i.nm+'</span>';
+    let inp,val=null;
+    if(i.type==='select'){
+      inp=el('select');
+      inp.style.cssText='flex:2 1 170px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.12);border-radius:9px;color:#fff;font-family:inherit;font-size:13.5px;padding:7px 10px';
+      i.opts.forEach(([v,lbl])=>{const o=el('option',null,lbl);o.value=v;inp.appendChild(o);});
+      inp.value=i.def;
+      inp.onchange=()=>{state[i.k]=inp.value;redraw();};
+    } else {
+      inp=el('input');
+      inp.type=i.type==='range'?'range':'number';
+      if(i.type==='range'){inp.min=i.min;inp.max=i.max;inp.step=i.step;}
+      inp.value=i.def;
+      val=i.type==='range'?el('span','val',String(i.def)):null;
+      inp.oninput=()=>{const raw=parseFloat(inp.value);state[i.k]=isNaN(raw)?0:raw;if(val)val.textContent=String(state[i.k]);redraw();};
+    }
+    lab.appendChild(inp); if(val)lab.appendChild(val);
+    inWrap.appendChild(lab);
+  });
+  box.appendChild(inWrap);box.appendChild(out);redraw();
+  return box;
+}
+function renderLearn(){
+  const m=$('#main');m.innerHTML='';
+  const L=D_LESSON[LESSON], ti=D_TOPICS.findIndex(x=>x.id===LESSON);
+  if(!L){m.appendChild(el('div','card','<h1 class="tt">No lesson for this section</h1>'));buildSidebar();return;}
+  const head=el('div','card');
+  head.innerHTML='<div class="eyebrow">'+L.eyebrow+' · Prep Material</div>'+
+    '<h1 class="tt">'+L.title+' 📖</h1><div class="sub">'+L.sub+'</div>'+
+    '<div class="sub" style="margin-top:9px">Read it through, drive the <b>live calculators</b> yourself, then take the check at the bottom.</div>';
+  m.appendChild(head);
+  const body=el('div','card');
+  let n=0;
+  L.steps.forEach(st=>{
+    if(st.type==='text'){n++;
+      const d=el('div','lstep');
+      d.innerHTML='<h4><span class="n">'+String(n).padStart(2,'0')+'</span>'+st.title+'</h4><p>'+st.body+'</p>';
+      body.appendChild(d);
+    } else if(st.type==='formula'){
+      const d=el('div','fcard');
+      d.innerHTML='<span class="pill">'+st.pill+'</span><div class="leg">'+
+        st.legend.map(l=>'<div><b class="sym">'+l[0]+'</b><span>'+l[1]+'</span></div>').join('')+'</div>';
+      body.appendChild(d);
+    } else if(st.type==='table'){
+      const d=el('div','ltab');
+      d.innerHTML='<h4>'+st.title+'</h4><div class="sc"><table><thead><tr>'+
+        st.head.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+
+        st.rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
+      body.appendChild(d);
+    } else if(st.type==='calc'){ body.appendChild(calcNode(st.calc,st.title));
+    } else if(st.type==='watch'){
+      const d=el('div','watch');
+      d.innerHTML='<h5>⚠ '+st.title+'</h5><p>'+st.body+'</p>';
+      body.appendChild(d);
+    }
+  });
+  m.appendChild(body);
+  if(L.check&&L.check.length){
+    const ck=el('div','card');
+    ck.innerHTML='<div class="eyebrow">Check yourself</div><h1 class="tt">'+L.check.length+' quick questions</h1>'+
+      '<div class="sub">Straight from what you just read. Clear them all and this section is marked done in the sidebar.</div>';
+    let got=0;
+    L.check.forEach((q,i)=>{
+      const card=el('div','qcard');
+      card.appendChild(el('div','qnum','<span>Check '+(i+1)+' / '+L.check.length+'</span>'));
+      card.appendChild(mcqNode(q,card,ok=>{
+        if(ok&&++got===L.check.length){
+          LEARNED[LESSON]=true;buildSidebar();
+          if(D_TOPICS.every(x=>LEARNED[x.id]))unlock('b_learn');
+          toast('✅','Section revised','“'+L.title+'” is marked done.');
+        }
+      }));
+      ck.appendChild(card);
+    });
+    const nav=el('div','lnav');
+    const prev=D_TOPICS[ti-1], next=D_TOPICS[ti+1];
+    if(prev){const b=el('button','btn btn-ghost','← '+prev.name);
+      b.onclick=()=>{LESSON=prev.id;renderLearn();window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});};nav.appendChild(b);}
+    nav.appendChild(el('div','sp'));
+    if(next){const b=el('button','btn btn-grad',next.name+' →');
+      b.onclick=()=>{LESSON=next.id;renderLearn();window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});};nav.appendChild(b);}
+    ck.appendChild(nav);
+    m.appendChild(ck);
+  }
+  buildSidebar();
+}
+
+/* =========================================================================
+   MODE · WRITTEN PAPER
+   ========================================================================= */
+function renderPaper(){
+  const m=$('#main');m.innerHTML='';
+  const total=D_PAPER.reduce((a,b)=>a+(b.marks||5),0);
+  const intro=el('div','card');
+  intro.innerHTML='<div class="eyebrow">Written paper</div>'+
+    '<h1 class="tt">'+D_PAPER.length+' long-form questions ✎</h1>'+
+    '<div class="sub"><b>'+D_PAPER.length+' questions · '+total+' marks.</b> '+(CFG.paperIntro||'A scenario, two or three parts, and an answer that has to show its working.')+'</div>'+
+    '<div class="sub" style="margin-top:10px">Work each one on paper <b>first</b> — commit to a recommendation, then open the model answer. '+
+    'Each one ends with a <b>marking scheme</b>: if your version has all the points, the wording does not matter.</div>';
+  m.appendChild(intro);
+  const groups=D_TOPICS.length?D_TOPICS:[{id:null,name:'Questions'}];
+  let n=0;
+  groups.forEach((t,ti)=>{
+    const qs=t.id?D_PAPER.filter(p=>p.t===t.id):D_PAPER;
+    if(!qs.length)return;
+    if(t.id){
+      const h=el('div','qgroup-h');h.id='pgrp-'+t.id;
+      h.innerHTML='<span class="gi">'+String(ti+1).padStart(2,'0')+'</span><span class="gt">'+t.name+'</span>'+
+        '<span class="gc">'+qs.reduce((a,b)=>a+(b.marks||5),0)+' marks</span>';
+      m.appendChild(h);
+    }
+    qs.forEach(P=>{
+      n++;
+      const card=el('div','pq');
+      card.innerHTML='<div class="ph"><span class="pn">Question '+n+' / '+D_PAPER.length+'</span><span class="mk">'+(P.marks||5)+' marks</span></div>'+
+        '<div class="pqt">'+P.title+'</div><p class="sub">'+P.body+'</p>'+
+        (P.parts?'<ol class="parts">'+P.parts.map(x=>'<li>'+x+'</li>').join('')+'</ol>':'');
+      const idx='p'+n;
+      const ansBox=el('div','ans');
+      ansBox.innerHTML='<h5>Model answer</h5>'+(P.svg&&typeof dsSvg==='function'?dsSvg(P.svg):'')+P.ans+
+        (P.rubric?'<div class="rub"><h6>Marking scheme — what the examiner wants</h6><ul>'+
+          P.rubric.map(r=>'<li>'+r+'</li>').join('')+'</ul></div>':'');
+      const btn=el('button','btn btn-grad btn-rev','Show model answer ↓');
+      btn.onclick=()=>{
+        const open=ansBox.classList.toggle('show');
+        btn.textContent=open?'Hide model answer ↑':'Show model answer ↓';
+        if(open&&!OPENED[idx]){OPENED[idx]=1;buildSidebar();
+          if(Object.keys(OPENED).length===EXAM_OPEN+D_PAPER.length)unlock('b_written');}
+      };
+      card.appendChild(btn);card.appendChild(ansBox);
+      m.appendChild(card);
+    });
+  });
+  if(CFG.examDayPlan){
+    const end=el('div','card');
+    end.innerHTML='<div class="eyebrow">Last thing before the exam</div><h1 class="tt">The exam-day plan 🎓</h1>'+
+      '<div class="plan">'+CFG.examDayPlan.map((t,i)=>'<div class="pstep"><span class="pi">'+String(i+1).padStart(2,'0')+'</span><span class="pt">'+t+'</span></div>').join('')+'</div>';
+    m.appendChild(end);
+  }
+  buildSidebar();
+}
+
+/* =========================================================================
+   SIDEBAR · FOOTER · RESULTS
+   ========================================================================= */
+function buildSidebar(){
+  const list=$('#topicList');list.innerHTML='';
+  if(MODE==='exam'){
+    D_CASES.forEach((C,i)=>{
+      const p=examState?examState.per[C.id]:{c:0,n:0,a:0};
+      const opens=C.qs.filter(q=>q.open).length;
+      const d=el('div','topic'+(p.n&&p.a===p.n&&p.c===p.n?' done':''));
+      d.innerHTML='<span class="idx">'+String(i+1).padStart(2,'0')+'</span>'+
+        '<span class="nm">'+C.title.split('—')[0].trim()+'<small>'+p.n+' MCQ'+(opens?' · '+opens+' written':'')+'</small></span>'+
+        '<span class="sc">'+p.c+'/'+p.n+'</span>';
+      d.onclick=()=>{const h=document.getElementById('case-'+C.id);
+        if(h){h.scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'});d.classList.add('pulse');setTimeout(()=>d.classList.remove('pulse'),600);}};
+      list.appendChild(d);});
+    $('#pbar').style.width=(EXAM_MCQ?(examState?examState.answered:0)/EXAM_MCQ*100:0)+'%';
+    return;
+  }
+  if(MODE==='paper'){
+    const groups=D_TOPICS.length?D_TOPICS:[];
+    groups.forEach((t,i)=>{
+      const qs=D_PAPER.filter(p=>p.t===t.id);if(!qs.length)return;
+      const d=el('div','topic');
+      d.innerHTML='<span class="idx">'+String(i+1).padStart(2,'0')+'</span>'+
+        '<span class="nm">'+t.name+'<small>'+qs.length+' question'+(qs.length>1?'s':'')+' · '+qs.reduce((a,b)=>a+(b.marks||5),0)+' marks</small></span>';
+      d.onclick=()=>{const h=document.getElementById('pgrp-'+t.id);
+        if(h)h.scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'});};
+      list.appendChild(d);});
+    $('#pbar').style.width=(D_PAPER.length?Object.keys(OPENED).filter(k=>k[0]==='p').length/D_PAPER.length*100:0)+'%';
+    return;
+  }
+  if(MODE==='learn'){
+    D_TOPICS.forEach((t,i)=>{
+      const d=el('div','topic'+(LESSON===t.id?' on':'')+(LEARNED[t.id]?' learned':''));
+      d.innerHTML='<span class="idx">'+String(i+1).padStart(2,'0')+'</span>'+
+        '<span class="nm">'+t.name+'<small>'+(t.kick||'')+'</small></span><span class="chk">✓</span>';
+      d.onclick=()=>{LESSON=t.id;renderLearn();window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});};
+      list.appendChild(d);});
+    $('#pbar').style.width=(D_TOPICS.filter(t=>LEARNED[t.id]).length/D_TOPICS.length*100)+'%';
+    return;
+  }
+  /* drill */
+  if(CORE.length&&CORE.length<D_QUIZ.length){
+    const core=el('div','topic scope'+(SCOPE==='core'?' on':''));
+    core.innerHTML='<span class="idx">◎</span><span class="nm">Core paper<small>'+CORE.length+' questions · every section</small></span>';
+    core.onclick=()=>setScope('core');list.appendChild(core);
+    const all=el('div','topic scope'+(SCOPE==='all'?' on':''));
+    all.innerHTML='<span class="idx">∞</span><span class="nm">Everything<small>'+D_QUIZ.length+' questions · adds the deep cuts</small></span>';
+    all.onclick=()=>setScope('all');list.appendChild(all);
+  } else {
+    const all=el('div','topic scope'+(FOCUS?'':' on'));
+    all.innerHTML='<span class="idx">◎</span><span class="nm">All sections<small>'+D_QUIZ.length+' questions · full paper</small></span>';
+    all.onclick=()=>setScope('all');list.appendChild(all);
+  }
+  D_TOPICS.forEach((t,i)=>{
+    const inScope=ACTIVE.some(q=>q.t===t.id);
+    const p=quizState?quizState.per[t.id]:{c:0,n:0,a:0};
+    const n=inScope?p.n:D_QUIZ.filter(q=>q.t===t.id).length;
+    const d=el('div','topic'+(inScope&&p.a===p.n&&p.n?' done':'')+(t.hot?' hot':'')+(FOCUS===t.id?' on':'')+(inScope?'':' off'));
+    d.innerHTML='<span class="idx">'+String(i+1).padStart(2,'0')+'</span>'+
+      '<span class="nm">'+t.name+(t.hot?' <em class="flame">🔥</em>':'')+'<small>'+(t.kick||'')+'</small></span>'+
+      '<span class="sc">'+(inScope?p.c+'/'+p.n:n)+'</span>';
+    d.onclick=()=>{
+      if(FOCUS===t.id){setScope(CORE.length<D_QUIZ.length?'core':'all');return;}
+      const h=document.getElementById('grp-'+t.id);
+      if(h&&!FOCUS&&inScope){h.scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'});d.classList.add('pulse');setTimeout(()=>d.classList.remove('pulse'),600);}
+      else setScope('topic',t.id);
+    };
+    d.ondblclick=()=>setScope('topic',t.id);
+    list.appendChild(d);});
+  $('#pbar').style.width=(ACTIVE.length?(quizState?quizState.answered:0)/ACTIVE.length*100:0)+'%';
+}
+
+function scored(){ return MODE==='exam'?examState:(MODE==='drill'?quizState:null); }
+function buildFoot(){
+  let f=$('#footbar');if(f)f.remove();
+  const s=scored(); if(!s)return;
+  f=el('div','footbar');f.id='footbar';
+  f.innerHTML='<div class="fp"><span class="lbl" id="footLbl">0 / '+s.total+' answered · 0 correct</span><div class="bar"><i id="footBar"></i></div></div>';
+  const btn=el('button','btn btn-grad','See Results ↓');btn.id='footBtn';btn.style.opacity=.5;btn.style.pointerEvents='none';btn.onclick=showResults;
+  const rt=el('button','btn btn-ghost','↺ Reshuffle &amp; Retake');
+  rt.onclick=()=>{MODE==='exam'?renderExam():renderDrill();window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});};
+  f.appendChild(btn);f.appendChild(rt);document.body.appendChild(f);
+}
+function updateFoot(){
+  const s=scored();if(!s||!$('#footLbl'))return;
+  $('#footLbl').textContent=s.answered+' / '+s.total+' answered · '+s.correct+' correct'+(G.best?' · best streak '+G.best:'');
+  $('#footBar').style.width=(s.answered/s.total*100)+'%';
+  const btn=$('#footBtn');if(s.answered===s.total){btn.style.opacity=1;btn.style.pointerEvents='auto';}
+}
+function grade(p){
+  if(p>=90)return['Outstanding — exam-ready! 🏆','var(--lime)'];
+  if(p>=75)return['Strong pass — polish the weak spots. ✅','var(--cyan)'];
+  if(p>=60)return['Decent — a focused review will lift this. 📈','var(--gold)'];
+  return['Keep going — reread the Why panels and retake. 🔁','var(--red)'];
+}
+function showResults(){
+  const s=scored();if(!s)return;
+  const{correct,total,per}=s,pct=Math.round(correct/total*100);
+  MISSED=s.missed.slice();
+  if(pct>=75)unlock('b_quiz75'); if(pct===100)unlock('b_perfect');
+  const rc=$('#resultsCard');rc.className='card';rc.innerHTML='';
+  rc.appendChild(el('div',null,'<div class="eyebrow">Results</div><h1 class="tt">Paper complete</h1>'));
+  const R=80,C=2*Math.PI*R;const rw=el('div','ring-wrap');
+  rw.innerHTML='<div class="ring"><svg width="200" height="200" viewBox="0 0 200 200">'+
+    '<circle cx="100" cy="100" r="'+R+'" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="16"/>'+
+    '<circle id="ringArc" cx="100" cy="100" r="'+R+'" fill="none" stroke="url(#gg)" stroke-width="16" stroke-linecap="round" stroke-dasharray="'+C+'" stroke-dashoffset="'+C+'"/>'+
+    '<defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22D3EE"/><stop offset="0.5" stop-color="#8B5CF6"/><stop offset="1" stop-color="#F472B6"/></linearGradient></defs></svg>'+
+    '<div class="mid"><div class="big" id="ringPct">0%</div><div class="sm">'+correct+' / '+total+'</div></div></div>';
+  const g=grade(pct),gs=el('div');
+  gs.innerHTML='<div class="grade" style="color:'+g[1]+'">'+g[0]+'</div><div class="sub">You answered '+correct+' of '+total+' correctly · longest streak <b>'+G.best+'</b> · tricky questions cleared <b>'+s.traps+'</b>.</div>';
+  rw.appendChild(gs);rc.appendChild(rw);
+  const meters=el('div','meters');let weak=null;
+  const rows = MODE==='exam'
+    ? D_CASES.map(c=>({id:c.id,name:c.cl+' · '+c.title.split('—')[0].trim(),p:per[c.id]}))
+    : D_TOPICS.map(t=>({id:t.id,name:t.name,p:per[t.id]}));
+  rows.forEach(r=>{const p=r.p;if(!p||!p.n)return;const ratio=p.c/p.n;
+    if(weak===null||ratio<weak.r)weak={id:r.id,name:r.name,r:ratio};
+    const mt=el('div','meter');
+    mt.innerHTML='<div class="top"><span>'+r.name+'</span><span class="sc">'+p.c+'/'+p.n+'</span></div><div class="bar"><i data-w="'+(ratio*100)+'"></i></div>';
+    meters.appendChild(mt);});
+  rc.appendChild(meters);
+  if(weak&&weak.r<1){
+    const w=el('div','watch');
+    w.innerHTML='<h5>Weakest block: '+weak.name+'</h5><p style="color:#ffd9e0">Reread the Why panels there'+(D_CMAP.length?', then check the matching row set in <b>📋 THE MAP</b>':'')+'.'+
+      (MODE==='drill'?' <a style="color:var(--cyan);cursor:pointer" id="goWeak">Drill just this section →</a>':'')+'</p>';
+    rc.appendChild(w);}
+  const row=el('div','row-btns');
+  if(MODE==='drill'&&MISSED.length){
+    const dr=el('button','btn btn-grad','🎯 Drill the '+MISSED.length+' I missed');
+    dr.onclick=()=>setScope('missed');row.appendChild(dr);
+  }
+  const rt=el('button','btn '+(MODE==='drill'&&MISSED.length?'btn-ghost':'btn-grad'),'↺ Reshuffle &amp; Retake');
+  rt.onclick=()=>{MODE==='exam'?renderExam():renderDrill();window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});};
+  row.appendChild(rt);
+  MODES.filter(x=>x.id!==MODE).forEach(x=>{
+    const b=el('button','btn btn-ghost',x.label+' →');b.onclick=()=>setMode(x.id);row.appendChild(b);});
+  if(D_CMAP.length){const mp=el('button','btn btn-ghost','📋 Open the map');mp.onclick=()=>$('#hMap').click();row.appendChild(mp);}
+  rc.appendChild(row);
+  rc.scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'});
+  requestAnimationFrame(()=>{
+    const arc=$('#ringArc');arc.style.transition=reduced?'none':'stroke-dashoffset 1.1s var(--spring)';
+    arc.style.strokeDashoffset=C*(1-pct/100);
+    meters.querySelectorAll('.bar i').forEach((b,i)=>setTimeout(()=>b.style.width=b.dataset.w+'%',reduced?0:120+i*80));
+    const node=$('#ringPct');
+    if(reduced)node.textContent=pct+'%';
+    else{const t0=performance.now();(function tk(now){const p=Math.min(1,(now-t0)/1100);node.textContent=Math.round(pct*p)+'%';if(p<1)requestAnimationFrame(tk);})(t0);}
+  });
+  const wb=$('#goWeak');if(wb)wb.onclick=()=>setScope('topic',weak.id);
+  if(pct>=75){sfxFanfare();confetti(140);crackers(innerWidth*0.5,innerHeight*0.38,14);mega(pct===100?'👑':'🎉',true);bigCall(pct===100?'FLAWLESS! 👑':'WELL PLAYED! 🎉');}
+  else{sfxSad();mega('😬',false);}
+}
+
+/* ---------- mode toggle ---------- */
+function renderModeToggle(){
+  const t=$('#mTog');
+  if(MODES.length<2){t.style.display='none';return;}
+  t.innerHTML='';
+  MODES.forEach(x=>{
+    const b=el('button',x.id===MODE?'on':'',x.label);
+    b.dataset.mode=x.id;b.onclick=()=>setMode(x.id);
+    t.appendChild(b);});
+}
+function setMode(m){
+  if(MODE===m)return;
+  MODE=m;
+  renderModeToggle();
+  const fb=$('#footbar'); if(fb) fb.style.display=(m==='exam'||m==='drill')?'':'none';
+  const def=(MODES.find(x=>x.id===m)||{}).side||'Sections';
+  $('#sideH').textContent=def;
+  if(m==='exam')renderExam(); else if(m==='learn')renderLearn(); else if(m==='paper')renderPaper(); else renderDrill();
+  window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});
+}
+
+/* ---------- badges panel ---------- */
+$('#hBadge').onclick=()=>{
+  if($('#badgeOvl')||$('#cmapOvl'))return;
+  const ovl=el('div','ovl');ovl.id='badgeOvl';
+  const card=el('div','card');
+  card.innerHTML='<div class="eyebrow">Achievements</div><h1 class="tt">Your badges — '+Object.keys(G.badges).length+' / '+BG.length+'</h1>'+
+    '<div class="sub">Earned by clearing sections, dodging the tricky questions, running streaks and scoring high on a full attempt.</div>';
+  const grid=el('div','badgegrid');
+  BG.forEach(b=>{const c=el('div','bcard'+(G.badges[b.id]?' unlocked':''));
+    c.innerHTML='<div class="em">'+(G.badges[b.id]?b.em:'🔒')+'</div><div class="bn">'+b.name+'</div><div class="bd">'+b.desc+'</div>';
+    grid.appendChild(c);});
+  card.appendChild(grid);
+  const row=el('div','row-btns');
+  const bk=el('button','btn btn-grad','← Back');const close=()=>ovl.remove();
+  bk.onclick=close;row.appendChild(bk);card.appendChild(row);
+  const x=el('button','x','×');x.onclick=close;
+  ovl.appendChild(x);ovl.appendChild(card);
+  ovl.onclick=e=>{if(e.target===ovl)close();};
+  document.addEventListener('keydown',function esc(e){if(e.key==='Escape'){close();document.removeEventListener('keydown',esc);}});
+  document.body.appendChild(ovl);
+};
+
+/* ---------- the map (cheat-sheet) ---------- */
+$('#hMap').onclick=()=>{
+  if(!D_CMAP.length||$('#cmapOvl'))return;
+  const ovl=el('div','ovl');ovl.id='cmapOvl';
+  const card=el('div','card');
+  card.innerHTML='<div class="eyebrow">Reference</div><h1 class="tt">'+(CFG.mapTitle||'The Map')+' 📋</h1>'+
+    '<div class="sub">'+(CFG.mapIntro||'The whole course on one page. <b>Bold</b> marks the bit that usually carries the mark; the blocks marked ★ are the ones worth reading last, on the morning of the paper.')+'</div>';
+  D_CMAP.forEach(b=>{
+    const blk=el('div','cm-block');
+    blk.innerHTML='<h4>'+b.h+'</h4><p class="cm-note">'+b.note+'</p>';
+    const sc=el('div','cm-scroll');
+    const cells=b.rows.map(r=>r.filter(c=>c!=='')), cols=Math.max(...cells.map(r=>r.length));
+    sc.innerHTML='<table><tbody>'+cells.map(r=>
+      '<tr>'+r.map((c,i)=>{
+        const span=(i===r.length-1&&r.length<cols)?' colspan="'+(cols-i)+'"':'';
+        return '<td'+span+'>'+c+'</td>';
+      }).join('')+'</tr>').join('')+'</tbody></table>';
+    blk.appendChild(sc);card.appendChild(blk);
+  });
+  const row=el('div','row-btns');
+  const bk=el('button','btn btn-grad','← Back');const close=()=>ovl.remove();
+  bk.onclick=close;row.appendChild(bk);card.appendChild(row);
+  const x=el('button','x','×');x.onclick=close;
+  ovl.appendChild(x);ovl.appendChild(card);
+  ovl.onclick=e=>{if(e.target===ovl)close();};
+  document.addEventListener('keydown',function esc(e){if(e.key==='Escape'){close();document.removeEventListener('keydown',esc);}});
+  document.body.appendChild(ovl);
+};
+
+/* =========================================================================
+   OPTIONAL HELPER · supply & demand diagram for written answers
+   Use in a PAPER or open question as   svg:{d:0.2,s:-0.3,cap:'…'}
+   d / s  = shift size, positive = rightward.   line:{p,label} draws a
+   price ceiling or floor and marks the Qd / Qs gap.
+   ========================================================================= */
+function dsSvg(o){
+  const W=430,H=300,X0=56,X1=390,Y0=34,Y1=250;
+  const mx=q=>X0+q*(X1-X0), my=p=>Y1-p*(Y1-Y0);
+  const dP=(q,d)=>0.9-0.8*q+d, sP=(q,s)=>0.1+0.8*q-s;
+  const eq=(d,s)=>{const q=(0.8+d+s)/1.6;return{q,p:0.1+0.8*q-s};};
+  const line=(f,a)=>'M '+mx(0)+' '+my(f(0,a))+' L '+mx(1)+' '+my(f(1,a));
+  const d=o.d||0, s=o.s||0, e0=eq(0,0), e1=eq(d,s);
+  let g='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" role="img" aria-label="Supply and demand diagram">'+
+    '<defs><clipPath id="cp'+(dsSvg.n=(dsSvg.n||0)+1)+'"><rect x="'+X0+'" y="'+Y0+'" width="'+(X1-X0)+'" height="'+(Y1-Y0)+'"/></clipPath></defs>'+
+    '<g clip-path="url(#cp'+dsSvg.n+')">';
+  g+='<path d="'+line(dP,0)+'" stroke="#22D3EE" stroke-width="2.4" fill="none"/>'+
+     '<path d="'+line(sP,0)+'" stroke="#FBBF24" stroke-width="2.4" fill="none"/>';
+  if(d)g+='<path d="'+line(dP,d)+'" stroke="#22D3EE" stroke-width="2.4" fill="none" stroke-dasharray="7 5"/>';
+  if(s)g+='<path d="'+line(sP,s)+'" stroke="#FBBF24" stroke-width="2.4" fill="none" stroke-dasharray="7 5"/>';
+  const dot=(q,p,c,r)=>'<circle cx="'+mx(q)+'" cy="'+my(p)+'" r="'+(r||5)+'" fill="'+c+'"/>';
+  const dash=(q,p,c)=>'<path d="M '+X0+' '+my(p)+' L '+mx(q)+' '+my(p)+' L '+mx(q)+' '+Y1+'" stroke="'+c+'" stroke-width="1.2" stroke-dasharray="3 4" fill="none" opacity=".6"/>';
+  if(o.line){
+    const lp=o.line.p, qd=(0.9-lp)/0.8, qs=(lp-0.1)/0.8;
+    g+='<path d="M '+X0+' '+my(lp)+' L '+X1+' '+my(lp)+'" stroke="#FB7185" stroke-width="2.2" stroke-dasharray="8 4" fill="none"/>'+
+       '<path d="M '+mx(Math.min(qd,qs))+' '+my(lp)+' L '+mx(Math.max(qd,qs))+' '+my(lp)+'" stroke="#FB7185" stroke-width="7" opacity=".3" fill="none"/>'+
+       dot(qs,lp,'#FB7185',4)+dot(qd,lp,'#FB7185',4)+
+       '<text x="'+mx(qs)+'" y="'+(my(lp)+20)+'" fill="#FB7185" font-size="11" text-anchor="middle">Qs</text>'+
+       '<text x="'+mx(qd)+'" y="'+(my(lp)+20)+'" fill="#FB7185" font-size="11" text-anchor="middle">Qd</text>';
+  }
+  g+=dash(e0.q,e0.p,'#9AA6C9')+dot(e0.q,e0.p,'#E7ECFF');
+  if(d||s)g+=dash(e1.q,e1.p,'#4ADE80')+dot(e1.q,e1.p,'#4ADE80',6);
+  g+='</g>';
+  g+='<path d="M '+X0+' '+Y0+' L '+X0+' '+Y1+' L '+X1+' '+Y1+'" stroke="#9AA6C9" stroke-width="1.6" fill="none"/>'+
+     '<text x="'+(X0-8)+'" y="'+(Y0+10)+'" fill="#9AA6C9" font-size="12" text-anchor="end">P</text>'+
+     '<text x="'+X1+'" y="'+(Y1+20)+'" fill="#9AA6C9" font-size="12" text-anchor="end">Q</text>'+
+     '<text x="'+(mx(1)-4)+'" y="'+(my(dP(1,0))-8)+'" fill="#22D3EE" font-size="12" text-anchor="end">D</text>'+
+     '<text x="'+(mx(1)-4)+'" y="'+(my(sP(1,0))+16)+'" fill="#FBBF24" font-size="12" text-anchor="end">S</text>';
+  if(d)g+='<text x="'+(mx(1)-4)+'" y="'+(my(dP(1,d))+(d>0?-8:16))+'" fill="#22D3EE" font-size="12" text-anchor="end">D₂</text>';
+  if(s)g+='<text x="'+(mx(1)-4)+'" y="'+(my(sP(1,s))+(s>0?16:-8))+'" fill="#FBBF24" font-size="12" text-anchor="end">S₂</text>';
+  if(o.line)g+='<text x="'+(X0+8)+'" y="'+(my(o.line.p)-8)+'" fill="#FB7185" font-size="12">'+o.line.label+'</text>';
+  g+='</svg>';
+  return '<div class="dsg">'+g+'<div class="cap">'+(o.cap||'')+'</div></div>';
+}
+
+/* ---------- init ---------- */
+if(!D_CMAP.length)$('#hMap').style.display='none';
+renderModeToggle();
+$('#sideH').textContent=(MODES.find(x=>x.id===MODE)||{}).side||'Sections';
+renderHUD();
+if(MODE==='exam')renderExam(); else if(MODE==='learn')renderLearn(); else if(MODE==='paper')renderPaper(); else renderDrill();
+</script>
+</body>
+</html>
