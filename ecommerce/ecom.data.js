@@ -6,13 +6,14 @@
 const CONFIG={
   quizEyebrow:'E-commerce · practice',
   quizTitle:'The practice bank',
-  quizIntro:'Nine sections covering the whole syllabus. Click a section in the sidebar to drill it alone; the 🃏 questions turn on a distinction that is easy to get backwards.',
+  quizIntro:'Ten sections covering the whole syllabus. Click a section in the sidebar to drill it alone; the 🃏 questions turn on a distinction that is easy to get backwards.',
   mapTitle:'The E-commerce Map',
   mapIntro:'Every framework, table and number in one scroll. Read it the hour before the paper.',
   examDayPlan:[
    '<b>Write the equation before you argue.</b> Traffic × Conversion = Users; Users × AOV × Frequency = Revenue. Then say which term your lever moves.',
    '<b>Name the mission.</b> Routine, urgent, experiential or research — it decides the platform, the UX and the selection.',
    '<b>Head drives orders; tail drives margin.</b> Any mix argument has to say what happens to the basket starters.',
+   '<b>Reorder point = demand over the lead time + safety stock.</b> Then size the order: fill rate, MOQ, open POs, events.',
    '<b>Quote the platform’s own numbers.</b> Amazon 20 mn+ SKUs, BigBasket 40,000+, Zepto 3,000+; quick-commerce AOV ₹350–700; 95% in-stock.'
   ]
 };
@@ -26,7 +27,8 @@ const TOPICS=[
  {id:'selection', name:'Missions & Selection',       kick:'what to stock, for which mission'},
  {id:'mix',       name:'Head, Torso, Tail & Margin', kick:'contribution, objectives, the mix tightrope', hot:true},
  {id:'ops',       name:'Operating Model & Availability', kick:'1P vs 3P, in-stock, cost vs service'},
- {id:'events',    name:'Planning, Forecasting & Events', kick:'covers, phasing and the event cycle'}
+ {id:'events',    name:'Planning, Forecasting & Events', kick:'covers, phasing and the event cycle'},
+ {id:'orders',    name:'Order Planning & Reorder Point', kick:'when to order, and how much', hot:true}
 ];
 
 /* =========================================================================
@@ -404,7 +406,73 @@ const QUIZ=[
         'Input planning',
         'Event readiness markers',
         'Capacity-driven inwarding plan'],
-  why:'<b>The cycle counts back from D-Day.</b><div class="work">N–100 → input planning\nN–90  → forecast lock\nN–75  → event readiness markers\nN–60  → capacity-driven inwarding plan\n      → ordering & inwarding\n      → tracking & iterating\nD-Day → event\n      → replenishment</div>Inputs come first (N–100); the forecast is locked ten days later.<br><br>Takeaway: build systems for proactive action rather than post-mortems — and an event playbook for your business.'}
+  why:'<b>The cycle counts back from D-Day.</b><div class="work">N–100 → input planning\nN–90  → forecast lock\nN–75  → event readiness markers\nN–60  → capacity-driven inwarding plan\n      → ordering & inwarding\n      → tracking & iterating\nD-Day → event\n      → replenishment</div>Inputs come first (N–100); the forecast is locked ten days later.<br><br>Takeaway: build systems for proactive action rather than post-mortems — and an event playbook for your business.'},
+/* ---------------- Order Planning & Reorder Point ---------------- */
+ {t:'orders',tag:'concept',diff:'medium',
+  q:'Goods have just been delivered to a retailer’s fulfilment centre. What happens next, in order?',
+  opts:['GRN at the retailer → fill-rate reconciliation → stock allocated to FCs / stores',
+        'Fill-rate reconciliation → GRN at the retailer → appointment for the delivery slot',
+        'Stock allocated to FCs / stores → GRN at the retailer → PO released to the brand',
+        'Demand consolidation → GRN at the retailer → brand allocates stock to the order'],
+  why:'<b>The order cycle runs from demand to shelf, and the paperwork follows the goods.</b><div class="work">FC/store demand → inventory system → demand consolidation\n→ PO released to brand → brand allocates stock → appointment\n→ goods delivered to FC/DC → GRN → FR reconciliation\n→ stock allocated to FC / store</div>The GRN (goods receipt note) records what actually arrived. Only then can the retailer reconcile it against the PO to get the fill rate, and only then is the stock usable.<br><br>Delivered is not the same as available: stock is sellable only after it has been received and allocated.'},
+
+ {t:'orders',tag:'concept',diff:'easy',
+  q:'What is a <b>reorder point</b>?',
+  opts:['The stock level at which a new order must go out so stock arrives before it runs out',
+        'The stock level the brand must hold at its depot before the retailer raises any PO',
+        'The date each month on which every SKU is reordered, regardless of how much is left',
+        'The minimum quantity a vendor will accept on a single purchase order from a retailer'],
+  why:'<b>The reorder point is a trigger level, not a date or a quantity.</b> When stock falls to it, you order — because the new stock takes the lead time to arrive.<div class="work">Reorder point = lead-time demand + safety stock\nLead-time demand = average daily sales × lead time</div>A fixed monthly date is periodic ordering, a different method. The vendor’s minimum quantity is the MOQ, which affects <i>how much</i> you order, not <i>when</i>.<br><br>When to order (reorder point) and how much to order (order quantum) are two separate decisions.'},
+
+ {t:'orders',tag:'calc',diff:'medium',
+  q:'A SKU sells 50 units a day on average, 70 on its best day, and the vendor takes 6 days to deliver. What is the reorder point?',
+  given:['Average sales 50 / day','Maximum sales 70 / day','Lead time 6 days'],
+  opts:['420 units',
+        '300 units',
+        '120 units',
+        '720 units'],
+  why:'<b>Reorder point = lead-time demand + safety stock.</b><div class="work">Lead-time demand = 50 × 6        = 300\nSafety stock     = (70 − 50) × 6  = 120\nReorder point    = 300 + 120      = 420</div>300 forgets the buffer; 120 is the buffer alone; 720 adds the maximum to the average before multiplying (120 × 6).<br><br>Check: 70 × 6 = 420. With this safety-stock method the two always agree.'},
+
+ {t:'orders',tag:'concept',diff:'hard',trap:true,
+  q:'With safety stock set as (max daily sales − average daily sales) × lead time, what does the reorder point simplify to?',
+  opts:['Maximum daily sales × lead time',
+        'Average daily sales × lead time',
+        'Maximum minus average daily sales',
+        'Average daily sales × lead time × 2'],
+  why:'<b>The average cancels out.</b><div class="work">ROP = avg × LT + (max − avg) × LT\n    = avg × LT + max × LT − avg × LT\n    = max × LT</div>So the reorder point is simply the stock you would need if every day of the lead time were your best day. Average × lead time is only the lead-time demand — the trap is forgetting the buffer.<br><br>A quick way to check any reorder-point answer: it should equal peak daily sales × lead time.'},
+
+ {t:'orders',tag:'apply',diff:'medium',
+  q:'A vendor’s lead time doubles from 5 to 10 days; daily sales do not change. What happens to the safety stock and the reorder point?',
+  opts:['Both double, because each is multiplied by the lead time',
+        'Safety stock is unchanged; only the reorder point doubles',
+        'Both stay the same, since the rate of sales has not moved',
+        'The reorder point doubles while safety stock is halved'],
+  why:'<b>Lead time multiplies both terms.</b><div class="work">Lead-time demand = avg × LT          → doubles\nSafety stock     = (max − avg) × LT  → doubles\nReorder point    = max × LT          → doubles</div>A longer lead time means more days of exposure to a demand spike before the stock arrives, so the buffer has to grow too.<br><br>Slow vendors cost working capital: every extra day of lead time is another day of stock held.'},
+
+ {t:'orders',tag:'calc',diff:'medium',trap:true,
+  q:'You need 1,500 units to arrive. The vendor has delivered 75% of ordered quantities over recent months. How much should you order?',
+  given:['Units needed 1,500','Vendor fill rate 75%'],
+  opts:['2,000 units',
+        '1,125 units',
+        '1,500 units',
+        '1,875 units'],
+  why:'<b>Plan for the shortfall: divide what you need by the fill rate.</b><div class="work">Order = need ÷ fill rate = 1,500 ÷ 0.75 = 2,000\nCheck: 2,000 × 75% = 1,500 delivered</div>1,125 multiplies by the fill rate — that is what you would <i>receive</i> on a 1,500 order. 1,875 adds 25% of 1,500, which still falls short (1,875 × 75% = 1,406).<br><br>Fill rate is a vendor’s track record; ignoring it builds a stock-out into the plan.'},
+
+ {t:'orders',tag:'apply',diff:'medium',
+  q:'After adjusting for fill rate you need to order 1,600 units, but the vendor’s minimum order quantity (MOQ) is 2,000. What should you order, and what is the cost?',
+  opts:['2,000 units — the MOQ binds, so you carry extra cover and working capital',
+        '1,600 units — the plan rules, and the vendor has to accept the smaller order',
+        '400 units now — the gap to the MOQ, then the 1,600 in a second order later',
+        'Nothing — skip the order until your need grows large enough to reach 2,000'],
+  why:'<b>MOQ is a commercial constraint: you order the larger of your need and the MOQ.</b><div class="work">Order = max(1,600, 2,000) = 2,000\nExcess = 400 units → more days of cover, more working capital</div>Skipping the order is the costly mistake — the stock-out happens anyway. Ordering below MOQ simply gets rejected.<br><br>When the MOQ is far above need, that is the cue to negotiate the MOQ or to order less often.'},
+
+ {t:'orders',tag:'apply',diff:'hard',trap:true,
+  q:'There is an open PO for 1,000 units that the vendor has not yet delivered; its fill rate is 80%. How much of that PO should you count on when sizing your next order?',
+  opts:['800 units — count open POs at the expected fill rate',
+        '1,000 units — an open PO is already a firm commitment',
+        'None — open POs are ignored until the goods arrive',
+        '1,250 units — gross the PO up by the fill rate'],
+  why:'<b>An open PO is stock on the way, but only at the rate the vendor actually delivers.</b><div class="work">Expected receipt = 1,000 × 80% = 800\nNext order covers: requirement − on hand − 800</div>Counting the full 1,000 double-counts stock that may never arrive. Ignoring it leads to over-ordering, and the excess turns into unhealthy inventory when both orders land.<br><br>Every quantity coming <i>from</i> a vendor is discounted by its fill rate; every quantity you <i>send</i> it is grossed up.'}
 ];
 
 /* =========================================================================
@@ -666,7 +734,44 @@ const LESSONS={
    {t:'events',tag:'concept',diff:'easy',
     q:'What comes immediately after D-Day in the event cycle?',
     opts:['Replenishment','Forecast lock','Input planning','Readiness markers'],
-    why:'The cycle ends with replenishment after D-Day; forecast lock is at N–90.'}]}
+    why:'The cycle ends with replenishment after D-Day; forecast lock is at N–90.'}]},
+
+ orders:{eyebrow:'Section 10', title:'Order Planning & Reorder Point', sub:'when to order, and how much to order',
+  steps:[
+   {type:'table', title:'The order cycle, demand to shelf', head:['#','Step','What it does'],
+    rows:[['1','FC / store demand','Each FC or store reports stock and sales to the retailer’s inventory system'],
+          ['2','Demand consolidation','Needs are rolled up across the network'],
+          ['3','PO released to brand','One purchase order per brand, sized to network demand'],
+          ['4','Brand allocates stock','The brand reserves stock against the PO'],
+          ['5','Appointment','A delivery slot is booked at the FC/DC'],
+          ['6','Delivery to FC/DC','Goods physically arrive'],
+          ['7','GRN','The goods receipt note records what actually arrived'],
+          ['8','FR reconciliation','Delivered vs ordered gives the fill rate'],
+          ['9','Allocation to FC / store','Stock becomes sellable']]},
+   {type:'formula', pill:'Reorder point = average daily sales × lead time + (max − average daily sales) × lead time',
+    legend:[['Lead-time demand','Average daily sales × lead time — what you sell while waiting'],
+            ['Safety stock','(Max − average) × lead time — the buffer for a peak run'],
+            ['Shortcut','The two terms simplify to max daily sales × lead time']]},
+   {type:'text', title:'A worked example',
+    body:'A SKU sells 1,200 units a month (40 a day), 55 on its best day, and the vendor needs 8 days. <div class="work">Lead-time demand = 40 × 8        = 320\nSafety stock     = (55 − 40) × 8  = 120\nReorder point    = 320 + 120      = 440   (check: 55 × 8 = 440)</div>When stock falls to 440, raise the PO. If forecasts are right, the new stock arrives just as you reach the 120-unit buffer.'},
+   {type:'table', title:'Sizing the order — five adjustments', head:['Consideration','What it means','How it changes the order'],
+    rows:[['Lead time & sales velocity','The business-as-usual baseline','Base need = average daily sales × lead time'],
+          ['Vendor fill rate','Vendors rarely deliver 100%','Order = need ÷ fill rate'],
+          ['Vendor MOQ','Commercial minimum per PO','Order = the larger of need and MOQ'],
+          ['Open POs','Already raised, not yet delivered','Subtract them, counted at the fill rate'],
+          ['Event planning','Forecast revision; manual override','Uplift daily demand for the event days only']]},
+   {type:'calc', calc:'rop', title:'Live: reorder point and order size'},
+   {type:'watch', title:'Traps in this section',
+    body:'<b>Fill rate cuts both ways:</b> divide what you need by it; multiply open POs by it. <b>Safety stock uses the gap</b> between max and average, not the max itself. <b>Lead time multiplies everything:</b> double it and both the buffer and the reorder point double. On a sawtooth stock chart, stock should bottom out at the safety stock when the new order lands. If a chart shows a minimum level different from the safety stock, read the gap as unplanned excess.'}],
+  check:[
+   {t:'orders',tag:'calc',diff:'easy',
+    q:'Average sales 30/day, maximum 45/day, lead time 4 days. Safety stock?',
+    opts:['60 units','180 units','120 units','15 units'],
+    why:'(45 − 30) × 4 = 60. 120 is the lead-time demand; 180 is the full reorder point (45 × 4).'},
+   {t:'orders',tag:'concept',diff:'easy',
+    q:'What does a GRN record?',
+    opts:['What actually arrived at the FC','What the retailer ordered','The vendor’s minimum order','The delivery appointment slot booked'],
+    why:'The goods receipt note records what was received; set against the PO it gives the fill rate.'}]}
 };
 
 /* =========================================================================
@@ -706,7 +811,27 @@ const CALCS={
     const b=v.st/v.r, e=v.st/(v.r*v.x);
     const d=e>=21?['ok','Comfortable through a 10-day event.']:e>=10?['warn','Tight: plan inwarding before D-Day (N–60).']:['bad','Stock-out risk during the event.'];
     return 'BAU   '+v.st+' ÷ '+v.r+' = '+b.toFixed(1)+' days\nEvent '+v.st+' ÷ '+(v.r*v.x)+' = '+e.toFixed(1)+' days'+
-      '<span class="big">'+e.toFixed(1)+' days in-event</span><span class="vd '+d[0]+'">'+d[1]+'</span>';}}
+      '<span class="big">'+e.toFixed(1)+' days in-event</span><span class="vd '+d[0]+'">'+d[1]+'</span>';}},
+ rop:{
+  hint:'Set the SKU’s sales and the vendor’s terms. See when to order and how much.',
+  ins:[{k:'avg',nm:'Average daily sales',type:'number',def:40},
+       {k:'mx',nm:'Maximum daily sales',type:'number',def:55},
+       {k:'lt',nm:'Lead time (days)',type:'range',min:1,max:21,step:1,def:8},
+       {k:'fr',nm:'Vendor fill rate %',type:'range',min:50,max:100,step:5,def:80},
+       {k:'moq',nm:'Vendor MOQ',type:'number',def:300},
+       {k:'po',nm:'Open PO (units)',type:'number',def:0}],
+  run:v=>{
+    const avg=+v.avg, mx=Math.max(+v.mx,avg), lt=+v.lt, fr=v.fr/100;
+    if(!fr)return 'Fill rate cannot be zero.';
+    const ltd=avg*lt, ss=(mx-avg)*lt, rop=ltd+ss, po=Math.round(v.po*fr);
+    const net=Math.max(ltd-po,0), gross=Math.ceil(net/fr), ord=net?Math.max(gross,+v.moq):0;
+    const note=!net?['ok','Open POs cover the baseline: no new order needed.']
+      :ord>gross?['warn','MOQ binds: you carry '+(ord-gross)+' units of extra cover.']
+      :['ok','Need grossed up for a '+v.fr+'% fill rate.'];
+    return 'Lead-time demand = '+avg+' × '+lt+' = '+ltd+'\nSafety stock     = ('+mx+' − '+avg+') × '+lt+' = '+ss+
+      '\nReorder point    = '+rop+'\nOpen PO counted  = '+v.po+' × '+v.fr+'% = '+po+
+      '\nOrder            = max('+net+' ÷ '+fr+', MOQ '+v.moq+')'+
+      '<span class="big">Order '+ord+' when stock hits '+rop+'</span><span class="vd '+note[0]+'">'+note[1]+'</span>';}}
 };
 
 /* =========================================================================
@@ -765,10 +890,17 @@ const CMAP=[
    ['Planning','Lock plan → covers & reorder → phasing'],
    ['Cover drivers','Speed to shelf, FC accuracy, fill rates, size, credit'],
    ['Events','Acquisition engines; break habit','N–100 · N–90 lock · N–75 · N–60 · D-Day · replenish']]},
+ {h:'Order planning',
+  rows:[
+   ['Reorder point','<b>avg × LT + (max − avg) × LT = max × LT</b>','50/day, 70 max, 6 days → 420'],
+   ['Fill rate','Order = need ÷ FR','open POs count at PO × FR'],
+   ['MOQ','Order the larger of need and MOQ','excess = extra cover'],
+   ['Order cycle','Consolidate → PO → allocate → appointment → deliver','GRN → FR reconciliation → allocate to FC']]},
  {h:'Exam day',
   rows:[
    ['Equation first','Name the term your lever moves'],
    ['Mission first','It decides platform, UX and selection'],
    ['Watch “FC”','Forecast vs fulfilment centre'],
-   ['bps vs %','50 bps = 0.5 percentage points']]}
+   ['bps vs %','50 bps = 0.5 percentage points'],
+   ['Fill rate direction','Divide your need by it; multiply open POs by it']]}
 ];
