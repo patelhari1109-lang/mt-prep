@@ -397,7 +397,7 @@ const LESSONS={
  formats:merged(['construct','specialty','org'],{eyebrow:'Section 03',title:'Formats & Teams',sub:'who decides, what format, and who sits across the table'},
    [reCheck('construct',0,'formats'),reCheck('org',0,'formats')]),
 
- scm:{eyebrow:'Section 04', title:'Supply Chain Operations', sub:'from purchase order to shelf, and the two ways to supply a store',
+ scm:{eyebrow:'Section 05', title:'Supply Chain Operations', sub:'from purchase order to shelf, and the two ways to supply a store',
   steps:[
    {type:'table', title:'The supply chain', head:['Stage','Job'],
     rows:[['Procurement','Source quality at the right cost'],['Manufacturing','Produce efficiently'],['Warehousing','Store smartly'],['Distribution','Deliver on time'],['Retail & shopper','Ensure availability at the shelf']]},
@@ -424,7 +424,7 @@ const LESSONS={
     opts:['DC supply','Direct store supply','Both equally','Neither'],
     why:'DC supply consolidates stock centrally, so the retailer decides how much each store gets; direct supply hands that to suppliers.'}]},
 
- inventory:{eyebrow:'Section 05', title:'Inventory Metrics & Forecasting', sub:'every formula you need, with a number',
+ inventory:{eyebrow:'Section 06', title:'Inventory Metrics & Forecasting', sub:'every formula you need, with a number',
   steps:[
    {type:'table', title:'Formula sheet', head:['Metric','Formula','Example'],
     rows:[['Fill rate','Supplied ÷ ordered × 100','950 ÷ 1,000 = 95%'],['PO fill rate','POs delivered in full ÷ total POs','90 ÷ 100 = 90%'],
@@ -449,7 +449,7 @@ const LESSONS={
     opts:['3,000','2,000','1,000','2,500'],
     why:'(4 + 2) × 500 = 3,000 units. 2,000 leaves out safety stock; 1,000 is the safety stock alone.'}]},
 
- cm:{eyebrow:'Section 06', title:'Category Management', sub:'what the category manager drives, and how brands are cast',
+ cm:{eyebrow:'Section 07', title:'Category Management', sub:'what the category manager drives, and how brands are cast',
   steps:[
    {type:'text', title:'The CM’s job',
     body:'Category management bundles products so they can be managed effectively. The CM drives <b>sales, profits and the share of private label</b>, deciding: which assortment, what share of shelf, the planogram (a schematic for displaying merchandise to maximise sales), how to partner leader and challenger brands, how to pull traffic into the aisle, and how to lift AOV and conversion. Tools: data and insight, partnering the leader to grow the category, shopper research.'},
