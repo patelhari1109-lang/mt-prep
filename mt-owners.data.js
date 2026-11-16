@@ -1,7 +1,9 @@
 /* =========================================================================
-   MODERN TRADE — Stores & operating companies (match the following).
-   Loads after mt.data.js and adds one section to it.
-   Source: Modern_Trade_Stores_and_Operating_Companies.docx (17 stores).
+   MODERN TRADE — Stores & operating companies, plus interactive
+   match-the-following cards placed between the MCQs.
+   Loads after mt.data.js. Source for the store list:
+   Modern_Trade_Stores_and_Operating_Companies.docx (17 stores).
+   Match cards use the engine's Q.match shape: [[left, right], …].
    ========================================================================= */
 
 const OWNERS=[
@@ -23,45 +25,24 @@ const OWNERS=[
  ['Reliance Fresh','Reliance Retail Ltd.'],
  ['Star Bazaar','Trent Hypermarket Pvt. Ltd. – Trent (Tata Group) and Tesco JV']
 ];
+const own=names=>names.map(n=>{const o=OWNERS.find(x=>x[0]===n);if(!o)throw new Error('unknown store '+n);return o;});
 
 TOPICS.splice(TOPICS.findIndex(t=>t.id==='formats')+1,0,
  {id:'owners', name:'Stores & Owners', kick:'match each MT store to its operating company'});
 
-/* a match-the-following question: stores numbered, companies lettered */
-function matchQ(stores,companies,pairs,why,extra){
-  const body='<div class="work">'+stores.map((s,i)=>(i+1)+'  '+s).join('\n')+'\n\n'+
-    companies.map((c,i)=>'ABCD'[i]+'  '+c).join('\n')+'</div>';
-  return Object.assign({t:'owners',tag:'concept',diff:'medium',
-    q:'<b>Match the following.</b> Pair each store with its operating company.'+body,
-    opts:pairs, why:why},extra||{});
+/* insert a question straight after the one whose stem contains `stem` */
+function insertAfter(stem,q){
+  const i=QUIZ.findIndex(x=>x.q.indexOf(stem)>=0);
+  if(i<0)throw new Error('insertAfter: no question with '+stem);
+  QUIZ.splice(i+1,0,q);
 }
 
+/* ---------------- Stores & Owners: match cards between MCQs ---------------- */
 QUIZ.push(
- matchQ(['DMart','Croma','Le Marche','Pantaloons'],
-  ['Aditya Birla Fashion and Retail Ltd.','Avenue Supermarts Ltd.','DS Group (Dharampal Satyapal)','Infiniti Retail Ltd. – Tata Group'],
-  ['1-B, 2-D, 3-C, 4-A','1-B, 2-C, 3-D, 4-A','1-A, 2-D, 3-C, 4-B','1-D, 2-B, 3-C, 4-A'],
-  '<b>Each store, its company.</b><div class="work">DMart      → Avenue Supermarts Ltd.\nCroma      → Infiniti Retail Ltd. (Tata Group)\nLe Marche  → DS Group (Dharampal Satyapal Group)\nPantaloons → Aditya Birla Fashion and Retail Ltd.</div>The store brand rarely matches the company name: DMart is run by <i>Avenue Supermarts</i>, Croma by <i>Infiniti Retail</i>.<br><br>Learn the operating company and the group behind it as a pair.'),
-
- matchQ(['SPAR Hypermarket','Lifestyle','Star Bazaar','More Supermarket'],
-  ['Lifestyle International Pvt. Ltd. – Landmark','More Retail Pvt. Ltd.','Max Hypermarkets India Pvt. Ltd. – Landmark','Trent Hypermarket Pvt. Ltd. – Trent / Tata'],
-  ['1-C, 2-A, 3-D, 4-B','1-A, 2-C, 3-D, 4-B','1-C, 2-A, 3-B, 4-D','1-D, 2-A, 3-C, 4-B'],
-  '<b>Two Landmark companies, one for each format.</b><div class="work">SPAR Hypermarket → Max Hypermarkets India Pvt. Ltd. (Landmark Group)\nLifestyle        → Lifestyle International Pvt. Ltd. (Landmark Group)\nStar Bazaar      → Trent Hypermarket Pvt. Ltd. (Trent, Tata Group; Tesco JV)\nMore Supermarket → More Retail Pvt. Ltd.</div>The trap is swapping SPAR and Lifestyle — both are Landmark, but SPAR runs through <i>Max Hypermarkets</i>, and the hypermarket name is the clue.<br><br>Star Bazaar and SPAR are both hypermarkets, but with different parents: Tata and Landmark.',
-  {trap:true}),
-
- matchQ(['Nature’s Basket','Spencer’s','Reliance Fresh','Shoppers Stop'],
-  ['Shoppers Stop Ltd.','Spencer’s Retail Ltd. – RP-Sanjiv Goenka','Nature’s Basket Ltd. – Spencer’s / RPSG','Reliance Retail Ltd.'],
-  ['1-C, 2-B, 3-D, 4-A','1-B, 2-C, 3-D, 4-A','1-C, 2-B, 3-A, 4-D','1-D, 2-B, 3-C, 4-A'],
-  '<b>Nature’s Basket sits under Spencer’s, which sits under RPSG.</b><div class="work">Nature’s Basket → Nature’s Basket Ltd. (Spencer’s Retail / RP-Sanjiv Goenka)\nSpencer’s       → Spencer’s Retail Ltd. (RP-Sanjiv Goenka Group)\nReliance Fresh  → Reliance Retail Ltd.\nShoppers Stop   → Shoppers Stop Ltd.</div>Two RPSG companies again — the premium supermarket keeps its own company under Spencer’s.<br><br>Reliance Fresh and Reliance Smart Bazaar both run through Reliance Retail.'),
-
- matchQ(['Vishal Mega Mart','Garg Dastak','Modern Bazaar','Big Bazaar'],
-  ['Future Retail Ltd. (historical chain)','Garg family-owned retail business','Modern Bazaar Departmental Stores Pvt. Ltd.','Vishal Mega Mart Ltd.'],
-  ['1-D, 2-B, 3-C, 4-A','1-A, 2-B, 3-C, 4-D','1-D, 2-C, 3-B, 4-A','1-D, 2-B, 3-A, 4-C'],
-  '<b>Standalone and family-run chains.</b><div class="work">Vishal Mega Mart → Vishal Mega Mart Ltd.\nGarg Dastak      → Garg family-owned retail business\nModern Bazaar    → Modern Bazaar Departmental Stores Pvt. Ltd.\nBig Bazaar       → Future Retail Ltd. (historical; format discontinued)</div>Big Bazaar is listed for reference only: Future Retail’s format has been discontinued.<br><br>Modern Bazaar (Delhi NCR) is also one of the regional premium supermarkets in the formats section.'),
-
- matchQ(['Reliance Smart Bazaar','Croma','SPAR Hypermarket','Nature’s Basket'],
-  ['Landmark Group','RP-Sanjiv Goenka Group','Reliance Industries','Tata Group'],
-  ['1-C, 2-D, 3-A, 4-B','1-C, 2-A, 3-D, 4-B','1-D, 2-C, 3-A, 4-B','1-C, 2-D, 3-B, 4-A'],
-  '<b>This time, match to the parent group.</b><div class="work">Reliance Smart Bazaar → Reliance Retail → Reliance Industries\nCroma                 → Infiniti Retail → Tata Group\nSPAR Hypermarket      → Max Hypermarkets India → Landmark Group\nNature’s Basket       → Spencer’s Retail → RP-Sanjiv Goenka Group</div>Store → operating company → group is a three-level chain; exam questions can ask for either level.<br><br>Know which groups run more than one MT banner: Reliance, Tata, Landmark, RPSG.'),
+ {t:'owners',tag:'concept',diff:'medium',cols:['Store','Operating company'],
+  q:'<b>Set 1.</b> Match each store to the company that runs it.',
+  match:own(['DMart','Croma','Le Marche','Pantaloons','SPAR Hypermarket','Lifestyle']),
+  why:'The banner rarely matches the company: DMart is <b>Avenue Supermarts</b>, Croma is <b>Infiniti Retail</b> (Tata). SPAR and Lifestyle are both Landmark, but through different companies — SPAR runs via <b>Max Hypermarkets India</b>.'},
 
  {t:'owners',tag:'concept',diff:'medium',
   q:'Which pair of stores is run by the <b>Landmark Group</b>?',
@@ -77,7 +58,12 @@ QUIZ.push(
         'Croma and Shoppers Stop',
         'Star Bazaar and SPAR Hypermarket',
         'Croma and More Supermarket'],
-  why:'<b>Tata runs Croma through Infiniti Retail Ltd. and Star Bazaar through Trent Hypermarket Pvt. Ltd.</b> (a Trent–Tesco joint venture).<div class="work">Croma       → Infiniti Retail Ltd. → Tata Group\nStar Bazaar → Trent Hypermarket Pvt. Ltd. → Trent (Tata) + Tesco JV</div>SPAR is Landmark; More is More Retail; Shoppers Stop is its own company.<br><br>Electronics specialist plus hypermarket — the same group runs two very different formats.'},
+  why:'<b>Tata runs Croma through Infiniti Retail Ltd. and Star Bazaar through Trent Hypermarket Pvt. Ltd.</b> (a Trent–Tesco joint venture).<div class="work">Croma       → Infiniti Retail Ltd. → Tata Group\nStar Bazaar → Trent Hypermarket Pvt. Ltd. → Trent (Tata) + Tesco JV</div>SPAR is Landmark; More is More Retail; Shoppers Stop is its own company.<br><br>An electronics specialist and a hypermarket — one group, two very different formats.'},
+
+ {t:'owners',tag:'concept',diff:'medium',cols:['Store','Operating company'],
+  q:'<b>Set 2.</b> Match each store to the company that runs it.',
+  match:own(['Star Bazaar','More Supermarket','Nature’s Basket','Spencer’s','Reliance Fresh','Shoppers Stop']),
+  why:'Nature’s Basket sits under <b>Spencer’s Retail</b>, which sits under the <b>RP-Sanjiv Goenka Group</b> — two RPSG companies in one set. Star Bazaar is <b>Trent Hypermarket</b> (Tata, with Tesco), and Reliance Fresh runs through <b>Reliance Retail</b>.'},
 
  {t:'owners',tag:'concept',diff:'medium',trap:true,
   q:'Nature’s Basket and Spencer’s share which parent group?',
@@ -95,32 +81,66 @@ QUIZ.push(
         'Modern Bazaar'],
   why:'<b>Big Bazaar (Future Retail Ltd.) is included for reference only — its former store format has been discontinued.</b><div class="work">Big Bazaar    → Future Retail (historical)\nStar Bazaar   → Trent Hypermarket (Tata)\nSmart Bazaar  → Reliance Retail\nModern Bazaar → Modern Bazaar Departmental Stores</div>Four “Bazaars”, four different owners — a favourite for match-the-following.<br><br>Ownership can change: verify current details before quoting any of them as formal fact.'},
 
+ {t:'owners',tag:'concept',diff:'medium',cols:['Store','Operating company'],
+  q:'<b>Set 3.</b> Match each store to the company that runs it.',
+  match:own(['Reliance Smart Bazaar','Vishal Mega Mart','Garg Dastak','Modern Bazaar','Big Bazaar']),
+  why:'Three of these are standalone or family-run: <b>Vishal Mega Mart Ltd.</b>, the <b>Garg family</b> business and <b>Modern Bazaar Departmental Stores</b>. Smart Bazaar runs through <b>Reliance Retail</b>; Big Bazaar (Future Retail) is historical.'},
+
  {t:'owners',tag:'concept',diff:'medium',
   q:'Which store on the list is run by a <b>family-owned</b> retail business rather than a corporate group or listed chain?',
   opts:['Garg Dastak',
         'Vishal Mega Mart',
         'DMart',
         'More Supermarket'],
-  why:'<b>Garg Dastak is a Garg family-owned retail business.</b><div class="work">Garg Dastak      → family-owned\nVishal Mega Mart → Vishal Mega Mart Ltd.\nDMart            → Avenue Supermarts Ltd.\nMore             → More Retail Pvt. Ltd.</div>In retailer-construct terms, a family-run chain usually means owner-led buying: quick decisions and direct negotiation.<br><br>Ownership shapes how an FMCG company sells in — owner, central buyer or category team.'}
+  why:'<b>Garg Dastak is a Garg family-owned retail business.</b><div class="work">Garg Dastak      → family-owned\nVishal Mega Mart → Vishal Mega Mart Ltd.\nDMart            → Avenue Supermarts Ltd.\nMore             → More Retail Pvt. Ltd.</div>In retailer-construct terms, a family-run chain usually means owner-led buying: quick decisions and direct negotiation.<br><br>Ownership shapes how an FMCG company sells in — owner, central buyer or category team.'},
+
+ {t:'owners',tag:'concept',diff:'hard',cols:['Store','Parent group'],
+  q:'<b>Set 4 — one level up.</b> Match each store to its <b>parent group</b>, not the operating company.',
+  match:[['Reliance Smart Bazaar','Reliance Industries'],['Croma','Tata Group'],['SPAR Hypermarket','Landmark Group'],
+         ['Nature’s Basket','RP-Sanjiv Goenka Group'],['Pantaloons','Aditya Birla Group'],['Le Marche','DS Group (Dharampal Satyapal)']],
+  why:'Store → operating company → group is a three-level chain. Smart Bazaar → Reliance Retail → <b>Reliance Industries</b>; Croma → Infiniti Retail → <b>Tata</b>; SPAR → Max Hypermarkets → <b>Landmark</b>; Nature’s Basket → Spencer’s → <b>RPSG</b>.'}
 );
 
-/* ---------------- lesson ---------------- */
-const SHORT=OWNERS.map(o=>[o[1].split(' – ')[0].replace(' (historical; format discontinued)',' (historical)'),o[1]]);
-function matcher(stores){
-  const opts=[['','— choose —']].concat(OWNERS.map((o,i)=>[String(i),SHORT[i][0]]).sort((a,b)=>a[1].localeCompare(b[1])));
-  return {hint:'Pick the operating company for each store, then read your score.',
-    ins:stores.map(s=>({k:'s'+s,nm:OWNERS[s][0],type:'select',opts:opts,def:''})),
-    run:v=>{
-      let ok=0,miss=[];
-      stores.forEach(s=>{if(v['s'+s]===String(s))ok++;else miss.push(OWNERS[s][0]+' → '+SHORT[s][0]);});
-      const done=stores.every(s=>v['s'+s]!=='');
-      return (done?'':'Choose a company for every store.\n')+'Correct: '+ok+' of '+stores.length+
-        '<span class="big">'+ok+' / '+stores.length+'</span>'+
-        (done&&miss.length?'<span class="vd warn">Fix: '+miss.join(' · ')+'</span>':'')+
-        (done&&!miss.length?'<span class="vd ok">All matched.</span>':'');}};
-}
-Object.assign(CALCS,{own1:matcher([0,4,2,11,6,3]),own2:matcher([16,5,10,14,15,13]),own3:matcher([1,7,8,9,12])});
+/* ---------------- match cards in other sections ---------------- */
+insertAfter('guided along one defined path',
+ {t:'shopper',tag:'concept',diff:'medium',cols:['Layout','Best suited for'],
+  q:'Match each store layout to the format it suits best.',
+  match:[['Grid','Grocery, pharmacy and convenience stores'],['Loop / racetrack','Fashion, department and lifestyle stores'],
+         ['Free-flow','Boutique, luxury and specialty stores'],['Spine','Large-format electronics and home improvement'],
+         ['Hybrid','Hypermarkets with several shopping missions']],
+  why:'Grid for efficiency and density; loop for a guided path past every category; free-flow for open, organic browsing; spine for one main aisle with departments off it; hybrid when one store has several missions.'});
 
+insertAfter('Lulu Hypermarket runs',
+ {t:'formats',tag:'concept',diff:'medium',cols:['Type of MT chain','Example'],
+  q:'Match each type of modern trade chain to an example of it.',
+  match:[['National / large hypermarket chain','DMart, Reliance Smart Bazaar'],['Supermarket chain','Nature’s Basket, More'],
+         ['Regional MT chain','Ratnadeep, Vijetha'],['Cash & carry / wholesale','METRO Wholesale'],['Convenience / mini-supermarket','Reliance Smart Point']],
+  why:'Construct and format are separate axes, but each chain type has signature examples. Cash & carry is the only one selling B2B — kiranas and food service — with bulk packs and slab schemes.'});
+
+insertAfter('In a WMS, what happens immediately after the GRN',
+ {t:'scm',tag:'concept',diff:'medium',cols:['Document / system','What it does'],
+  q:'Match each document or system to its job in the PO-to-shelf process.',
+  match:[['Purchase order','Places the order with the supplier'],['Delivery appointment','Fixes the date and time slot at the DC'],
+         ['Delivery challan','Travels with the goods from the supplier'],['GRN','Records the quantity actually accepted'],
+         ['Invoice','The supplier’s bill, matched before payment'],['WMS','Runs receiving, put-away, picking and dispatch']],
+  why:'PO + GRN + invoice is the three-way match before payment. The challan travels with the goods; the GRN records what was accepted; the WMS runs everything inside the DC.'});
+
+insertAfter('Of 200 store orders, 170 arrived on time',
+ {t:'inventory',tag:'calc',diff:'medium',cols:['Metric','Formula'],
+  q:'Match each supply chain metric to its formula.',
+  match:[['Fill rate','Quantity supplied ÷ quantity ordered'],['OTIF','Orders on time and in full ÷ total orders'],
+         ['On-shelf availability','Outlets with the product in stock ÷ outlets'],['Inventory turnover','COGS ÷ average inventory'],
+         ['Days of inventory','Average inventory ÷ COGS × 365'],['Forecast accuracy','1 − |forecast − actual| ÷ actual']],
+  why:'Turnover and days of inventory are the same idea inverted (days = 365 ÷ turns). Fill rate counts units; OTIF counts whole orders that were both on time and complete; forecast error is divided by the <b>actual</b>.'});
+
+insertAfter('A leader brand holds a dominant share',
+ {t:'cm',tag:'concept',diff:'hard',cols:['Brand role','Placement lever'],
+  q:'Match each brand role to how the retailer places it on the shelf.',
+  match:[['Destination','Strategic, disproportionate space'],['Traffic','In line with sales; high-margin items highlighted'],
+         ['Service','Normal; extra space only in seasonal categories'],['Image','Worst areas of the store, least footfall']],
+  why:'Placement follows the role. Destination brands earn prime, outsized space; traffic brands get space in line with sales; service brands sit normally; image brands go where footfall is lowest.'});
+
+/* ---------------- lesson ---------------- */
 LESSONS.owners={eyebrow:'Section 04', title:'Stores & Operating Companies', sub:'17 modern trade banners and who runs them',
  steps:[
   {type:'table', title:'All seventeen', head:['#','MT store','Operating company / parent group'],
@@ -130,11 +150,8 @@ LESSONS.owners={eyebrow:'Section 04', title:'Stores & Operating Companies', sub:
          ['Tata Group','Croma · Star Bazaar','Infiniti Retail Ltd. · Trent Hypermarket Pvt. Ltd. (Tesco JV)'],
          ['Landmark Group','Lifestyle · SPAR Hypermarket','Lifestyle International · Max Hypermarkets India'],
          ['RP-Sanjiv Goenka Group','Spencer’s · Nature’s Basket','Spencer’s Retail Ltd. · Nature’s Basket Ltd.']]},
-  {type:'calc', calc:'own1', title:'Match the following: set 1'},
-  {type:'calc', calc:'own2', title:'Match the following: set 2'},
-  {type:'calc', calc:'own3', title:'Match the following: set 3'},
   {type:'watch', title:'Traps and a caution',
-   body:'The store name rarely matches the company: <b>DMart → Avenue Supermarts</b>, <b>Croma → Infiniti Retail</b>, <b>SPAR → Max Hypermarkets</b>, <b>Star Bazaar → Trent Hypermarket</b>. Four “Bazaars” have four owners. Big Bazaar is historical. Ownership and operating arrangements change, so verify current corporate details before using any of these as a formal reference.'}],
+   body:'The store name rarely matches the company: <b>DMart → Avenue Supermarts</b>, <b>Croma → Infiniti Retail</b>, <b>SPAR → Max Hypermarkets</b>, <b>Star Bazaar → Trent Hypermarket</b>. Four “Bazaars” have four owners. Big Bazaar is historical. Ownership and operating arrangements change, so verify current corporate details before using any of these as a formal reference. The interactive match-the-following cards are in the Practice Quiz.'}],
  check:[
   {t:'owners',tag:'concept',diff:'easy',
    q:'DMart is operated by…',
